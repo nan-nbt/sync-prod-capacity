@@ -1,0 +1,18 @@
+pages:
+  stage: deploy
+  image: repo.pouchen.com/docker-proxy-group/library/node:24.14.0-alpine
+  before_script:
+    - npm config set registry "https://repo.pouchen.com/repository/npm-npmjs/"
+  script:
+    - npm ci
+    - npm run build
+    - mv ./build public
+    - test -s public/index.html
+  pages: true
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: "$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH"
+  tags:
+    - SGP-Test-K8s
