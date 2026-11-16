@@ -1,0 +1,560 @@
+{
+  "version": "main",
+  "sourceTag": "main",
+  "sourceCommit": "26d24e8bca9723e1df3b3f1146fb88709f1762ba",
+  "profile": "core",
+  "profiles": [
+    "core"
+  ],
+  "ai": "opencode",
+  "script": "node",
+  "language": "English",
+  "modules": [
+    "core-specify",
+    "contracts",
+    "task-details",
+    "ai-opencode",
+    "architect",
+    "bug-extension",
+    "conventional-commit",
+    "speckit-constitution-authoring-skill"
+  ],
+  "explicitSelectedMcps": [],
+  "selectedMcps": [],
+  "selectedModules": [
+    "architect",
+    "bug-extension",
+    "contracts",
+    "conventional-commit",
+    "speckit-constitution-authoring-skill",
+    "task-details"
+  ],
+  "externalSkills": [
+    "conventional-commit",
+    "speckit-constitution-authoring"
+  ],
+  "presetSkills": [],
+  "manifestPath": ".specify/manifest.json",
+  "lastSyncedAt": "2026-11-16T08:58:46.368Z",
+  "lastUpdatedFromVersion": null,
+  "lastUpdateSummary": null,
+  "managedFiles": {
+    ".opencode/commands/speckit.agent-context.update.md": {
+      "moduleId": "extensions",
+      "sourcePath": "extensions/agent-context/commands/speckit.agent-context.update.md",
+      "sourceHash": "5570a90ea9da73e11143ab2af258013f7361ab0b4f3acba5eede6c7bc68c2a05",
+      "renderedHash": "5570a90ea9da73e11143ab2af258013f7361ab0b4f3acba5eede6c7bc68c2a05"
+    },
+    ".opencode/commands/speckit.analyze.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "command/speckit.analyze.md",
+      "sourceHash": "762da2e77a119f82b6496bcab67889ee3447453a05b64f2a69d2478fc8a805b7",
+      "renderedHash": "acfcbeb172118c44036b567fed534e49ee1120664f1eb72421b5c4833866f842"
+    },
+    ".opencode/commands/speckit.branch-convention.configure.md": {
+      "moduleId": "extensions",
+      "sourcePath": "extensions/branch-convention/commands/speckit.branch-convention.configure.md",
+      "sourceHash": "653cf32e5a59df6d67c3495ca44e82f2896ead4ddce37e9c20132da9ba8dbf2c",
+      "renderedHash": "14e0b1e4a41465a2d22415f4359034009d2e256bc1128aefcb89c2a80cba72f5"
+    },
+    ".opencode/commands/speckit.branch-convention.rename.md": {
+      "moduleId": "extensions",
+      "sourcePath": "extensions/branch-convention/commands/speckit.branch-convention.rename.md",
+      "sourceHash": "a949c08ae9c12625d92d33b3700b3464fe3b78422a277dfd5948c823517fe57e",
+      "renderedHash": "a949c08ae9c12625d92d33b3700b3464fe3b78422a277dfd5948c823517fe57e"
+    },
+    ".opencode/commands/speckit.branch-convention.validate.md": {
+      "moduleId": "extensions",
+      "sourcePath": "extensions/branch-convention/commands/speckit.branch-convention.validate.md",
+      "sourceHash": "7af96e058cf54f2270fa718387e65661a7d1f7eba3db51d3328815c1b337b1d5",
+      "renderedHash": "f2457a6a75bd168b0dd01d7ebbd3ca6d368ebbb7f963db9a9fae4b671a9e56fa"
+    },
+    ".opencode/commands/speckit.brownfield.bootstrap.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "command/speckit.brownfield.bootstrap.md",
+      "sourceHash": "dd027f157053e99e8e5ebf9b528553aecf839a0c7e11507f178490bb723ea9e9",
+      "renderedHash": "6a5acedf08db862a20c59bd7cab5c147d17d6a7bd95c836adb0d2e9edb64afd3"
+    },
+    ".opencode/commands/speckit.brownfield.migrate.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "command/speckit.brownfield.migrate.md",
+      "sourceHash": "cf3b78c3ce52ae52faf700edc26ccb1200ae6a964fb510819e5e38af45c9a130",
+      "renderedHash": "4cb81efecafd84d82236123ae91889fa45747e59fb1c6809ae8acda65f51ae24"
+    },
+    ".opencode/commands/speckit.brownfield.scan.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "command/speckit.brownfield.scan.md",
+      "sourceHash": "3f52e4894ca99523f6e6a079e151d7ad3445e7d74946b2b8fee15129e137dc1a",
+      "renderedHash": "3f52e4894ca99523f6e6a079e151d7ad3445e7d74946b2b8fee15129e137dc1a"
+    },
+    ".opencode/commands/speckit.brownfield.validate.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "command/speckit.brownfield.validate.md",
+      "sourceHash": "dc0867cbb0de7a1c6746993214674c63a87f07268f8079fa41e6db301604398f",
+      "renderedHash": "dc0867cbb0de7a1c6746993214674c63a87f07268f8079fa41e6db301604398f"
+    },
+    ".opencode/commands/speckit.bug.assess.md": {
+      "moduleId": "extensions",
+      "sourcePath": "extensions/bug/commands/speckit.bug.assess.md",
+      "sourceHash": "6786963d1f89d129e63ac60e570ad28702d59813455fc95284d2facc1eb6b52f",
+      "renderedHash": "963920411610af299e9fdaaac13f5857f1b9d7701977999a5bf494f153ba8cb2"
+    },
+    ".opencode/commands/speckit.bug.fix.md": {
+      "moduleId": "extensions",
+      "sourcePath": "extensions/bug/commands/speckit.bug.fix.md",
+      "sourceHash": "df8b28b3687617fa883998d060e5402a2baabd34023bef3d1fbcde9e014c5bf6",
+      "renderedHash": "0b9bfb51908969c46b89e56493f3971bea2b96f1d6bd4185bd4972ef98e38649"
+    },
+    ".opencode/commands/speckit.bug.test.md": {
+      "moduleId": "extensions",
+      "sourcePath": "extensions/bug/commands/speckit.bug.test.md",
+      "sourceHash": "ac2ab5542b0a9b098af75baad0b23b49e3763b8893eda8497bf234fb5a0df2ff",
+      "renderedHash": "931c247e72e36af419243bf8dc86a3695861f414c560f9d3103fae4634a9080b"
+    },
+    ".opencode/commands/speckit.checklist.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "command/speckit.checklist.md",
+      "sourceHash": "347e1cc3f2bce7bee005138b2ecccbdbb20f473959e58b278bf2a9f374fd6e2a",
+      "renderedHash": "8740dd5351584e043e71ff9f86332cd3d4de70eb7bd29053c653e63922414632"
+    },
+    ".opencode/commands/speckit.clarify.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "command/speckit.clarify.md",
+      "sourceHash": "fde8028ade2b576f8768451f34a7182e688a4e44edc449d65f821efdbee803be",
+      "renderedHash": "4fb39ee28ce0635735479f17b8593ec8ebacf158a13c779dfd979607f98d77e9"
+    },
+    ".opencode/commands/speckit.constitution.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "command/speckit.constitution.md",
+      "sourceHash": "58d35eb026f56bb7364d91b8b0382d5dd1249ded6c1449a2b69546693afb85f7",
+      "renderedHash": "58d35eb026f56bb7364d91b8b0382d5dd1249ded6c1449a2b69546693afb85f7"
+    },
+    ".opencode/commands/speckit.converge.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "command/speckit.converge.md",
+      "sourceHash": "a92656e98b71c9e8e77d0aa89243922ebc748d264861e73720a7180c004b121f",
+      "renderedHash": "abcafa3562ba8b1903674abf02c80330aa94b9d47a2c65082c290dd80bb5ebdf"
+    },
+    ".opencode/commands/speckit.implement.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "command/speckit.implement.md",
+      "sourceHash": "4b7b61f497e3560f94b43300035ca6f3e6481250bce4420293479b7f6692e226",
+      "renderedHash": "52b60efbf1a7f4a97bf99a1a8baac0ea4293584beffc6f8fc6f12b8dfc8f1194"
+    },
+    ".opencode/commands/speckit.plan.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "command/speckit.plan.md",
+      "sourceHash": "e821592de6a80a7e09d426bacf5fcda7875bfbd619b3c211bcf6344ce38f0655",
+      "renderedHash": "52dc9c51e27789bc4b2ae7c22c573f5b0a4ba848dfa703b6657cbc416a7604bf"
+    },
+    ".opencode/commands/speckit.specify.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "command/speckit.specify.md",
+      "sourceHash": "d3aac388c37987372fe3551fb1ef181a420c837ec4d515039b61adddeda0b3b9",
+      "renderedHash": "1f9d18d6e4aba8107b6d77b7ddea2b33a212a0600acec7753e1063bf67d3291a"
+    },
+    ".opencode/commands/speckit.tasks.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "command/speckit.tasks.md",
+      "sourceHash": "8ae439d626ffe8db304b34c0c4b6cf0b870c83dd6295e80f736ad01fd911fdde",
+      "renderedHash": "52af2b96cb703d6cd1c9f62df9593894089ade4633efc6591740b363d12a2cc7"
+    },
+    ".opencode/commands/speckit.taskstoissues.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "command/speckit.taskstoissues.md",
+      "sourceHash": "bdc4bb1a1c6e3337560ce92a3fd1d2ce7f1b2edfab4287fad3ab22f903e7036b",
+      "renderedHash": "be7f7387393a1f7bfd6debcb6d4fbfbfd39e8946d85f04cde5932c10b7db0def"
+    },
+    ".opencode/opencode.json": {
+      "moduleId": "(mcp-config)",
+      "sourcePath": "(generated:mcp-config)",
+      "sourceHash": "9bc3c0cef516a0974755ebc423759e2e23ca991c03c26803dd8f44b1aa999fc4",
+      "renderedHash": "9bc3c0cef516a0974755ebc423759e2e23ca991c03c26803dd8f44b1aa999fc4",
+      "managedKeys": []
+    },
+    ".specify/branch-convention.yml": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/branch-convention.yml",
+      "sourceHash": "eeba5fadf4dcf4fb9f95e6abd40519a0536247bcc276ed1891596c2dffe9509f",
+      "renderedHash": "eeba5fadf4dcf4fb9f95e6abd40519a0536247bcc276ed1891596c2dffe9509f"
+    },
+    ".specify/extensions.yml": {
+      "moduleId": "(extensions-yml)",
+      "sourcePath": "specify/extensions.yml",
+      "sourceHash": "158db323173662250ddba6ef768d5de14c44f4c459d61dfd19d029d7a51fb619",
+      "renderedHash": "158db323173662250ddba6ef768d5de14c44f4c459d61dfd19d029d7a51fb619",
+      "managedKeys": [
+        "hook:v2:[\"after_plan\",\"agent-context\",\"command: speckit.agent-context.update\\ncondition: null\\ndescription: Refresh agent context after planning\\nenabled: true\\nextension: agent-context\\noptional: true\\npriority: 10\\nprompt: Execute speckit.agent-context.update?\\n\"]",
+        "hook:v2:[\"after_specify\",\"agent-context\",\"command: speckit.agent-context.update\\ncondition: null\\ndescription: Refresh agent context after specification\\nenabled: true\\nextension: agent-context\\noptional: true\\npriority: 10\\nprompt: Execute speckit.agent-context.update?\\n\"]",
+        "hook:v2:[\"after_specify\",\"branch-convention\",\"command: node .specify/extensions/branch-convention/scripts/create-branch-from-feature.mjs --json\\ncondition: null\\ndescription: Create or switch to a convention-compliant Git branch after /speckit.specify writes the feature directory\\nenabled: true\\nextension: branch-convention\\noptional: false\\nprompt: Create/switch to a branch that follows branch-convention.yml?\\n\"]",
+        "installed:agent-context",
+        "installed:branch-convention"
+      ]
+    },
+    ".specify/extensions/agent-context/agent-context-config.yml": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/agent-context/agent-context-config.yml",
+      "sourceHash": "9a31c5f6c6a2892034931d46dd8c656cb3ba8bf8dbcd5678470bd34449d9a4e9",
+      "renderedHash": "9a31c5f6c6a2892034931d46dd8c656cb3ba8bf8dbcd5678470bd34449d9a4e9"
+    },
+    ".specify/extensions/agent-context/commands/speckit.agent-context.update.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/agent-context/commands/speckit.agent-context.update.md",
+      "sourceHash": "5570a90ea9da73e11143ab2af258013f7361ab0b4f3acba5eede6c7bc68c2a05",
+      "renderedHash": "5570a90ea9da73e11143ab2af258013f7361ab0b4f3acba5eede6c7bc68c2a05"
+    },
+    ".specify/extensions/agent-context/extension.yml": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/agent-context/extension.yml",
+      "sourceHash": "9a1dc02d2d0139bb03860392ecacef79183be2c442feda2f9ccaa4e5907b1e47",
+      "renderedHash": "9a1dc02d2d0139bb03860392ecacef79183be2c442feda2f9ccaa4e5907b1e47"
+    },
+    ".specify/extensions/agent-context/README.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/agent-context/README.md",
+      "sourceHash": "8d44a2cb4a5f4bc491546ed5e3ea0caa073b1caae737844e548f2b0607026372",
+      "renderedHash": "8d44a2cb4a5f4bc491546ed5e3ea0caa073b1caae737844e548f2b0607026372"
+    },
+    ".specify/extensions/agent-context/scripts/bash/update-agent-context.sh": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/agent-context/scripts/bash/update-agent-context.sh",
+      "sourceHash": "17afc64fc0a1bc2978f2123eec8d791db8277437f4c6b272474130764542989c",
+      "renderedHash": "17afc64fc0a1bc2978f2123eec8d791db8277437f4c6b272474130764542989c"
+    },
+    ".specify/extensions/agent-context/scripts/node/update-agent-context.mjs": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/agent-context/scripts/node/update-agent-context.mjs",
+      "sourceHash": "d06d83736fe1c7cb7dcb0d80b175485e286c24132789420876e81cc7673b54fe",
+      "renderedHash": "d06d83736fe1c7cb7dcb0d80b175485e286c24132789420876e81cc7673b54fe"
+    },
+    ".specify/extensions/agent-context/scripts/powershell/update-agent-context.ps1": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/agent-context/scripts/powershell/update-agent-context.ps1",
+      "sourceHash": "4e26ba61c3a16f3e8cc07a5cd0c752fc18bca1659c26b6e00f7da260478f14c4",
+      "renderedHash": "4e26ba61c3a16f3e8cc07a5cd0c752fc18bca1659c26b6e00f7da260478f14c4"
+    },
+    ".specify/extensions/branch-convention/commands/speckit.branch-convention.configure.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/branch-convention/commands/speckit.branch-convention.configure.md",
+      "sourceHash": "653cf32e5a59df6d67c3495ca44e82f2896ead4ddce37e9c20132da9ba8dbf2c",
+      "renderedHash": "14e0b1e4a41465a2d22415f4359034009d2e256bc1128aefcb89c2a80cba72f5"
+    },
+    ".specify/extensions/branch-convention/commands/speckit.branch-convention.rename.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/branch-convention/commands/speckit.branch-convention.rename.md",
+      "sourceHash": "a949c08ae9c12625d92d33b3700b3464fe3b78422a277dfd5948c823517fe57e",
+      "renderedHash": "a949c08ae9c12625d92d33b3700b3464fe3b78422a277dfd5948c823517fe57e"
+    },
+    ".specify/extensions/branch-convention/commands/speckit.branch-convention.validate.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/branch-convention/commands/speckit.branch-convention.validate.md",
+      "sourceHash": "7af96e058cf54f2270fa718387e65661a7d1f7eba3db51d3328815c1b337b1d5",
+      "renderedHash": "f2457a6a75bd168b0dd01d7ebbd3ca6d368ebbb7f963db9a9fae4b671a9e56fa"
+    },
+    ".specify/extensions/branch-convention/extension.yml": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/branch-convention/extension.yml",
+      "sourceHash": "caeaddffb2109e86d01ce836ef820c7b29a8d0be1ca2b6778e8e2f9418f13e40",
+      "renderedHash": "caeaddffb2109e86d01ce836ef820c7b29a8d0be1ca2b6778e8e2f9418f13e40"
+    },
+    ".specify/extensions/branch-convention/README.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/branch-convention/README.md",
+      "sourceHash": "c46d192959d71170feb8d52a2a2064b9c840a01db3bee444b068dfc4eaf08ad1",
+      "renderedHash": "c46d192959d71170feb8d52a2a2064b9c840a01db3bee444b068dfc4eaf08ad1"
+    },
+    ".specify/extensions/branch-convention/scripts/create-branch-from-feature.mjs": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/branch-convention/scripts/create-branch-from-feature.mjs",
+      "sourceHash": "9db0689bac9b47385bbb5d3a18e66036e21b6af7c7363bcbd4ad29c981024a1f",
+      "renderedHash": "9db0689bac9b47385bbb5d3a18e66036e21b6af7c7363bcbd4ad29c981024a1f"
+    },
+    ".specify/extensions/branch-convention/scripts/suggest-feature-name.mjs": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/branch-convention/scripts/suggest-feature-name.mjs",
+      "sourceHash": "73cd9b46d24ebd05c058961356cf2ddcf9eb5dc7be7f77e00e61c27ddf922135",
+      "renderedHash": "73cd9b46d24ebd05c058961356cf2ddcf9eb5dc7be7f77e00e61c27ddf922135"
+    },
+    ".specify/extensions/branch-convention/scripts/watch-feature-branch.mjs": {
+      "moduleId": "core-specify",
+      "sourcePath": "extensions/branch-convention/scripts/watch-feature-branch.mjs",
+      "sourceHash": "ddcedaf2c0588bba0597df193df490d7ab6ef8e54a9e11b38a49fc39067d1dfb",
+      "renderedHash": "ddcedaf2c0588bba0597df193df490d7ab6ef8e54a9e11b38a49fc39067d1dfb"
+    },
+    ".specify/extensions/bug/commands/speckit.bug.assess.md": {
+      "moduleId": "bug-extension",
+      "sourcePath": "extensions/bug/commands/speckit.bug.assess.md",
+      "sourceHash": "6786963d1f89d129e63ac60e570ad28702d59813455fc95284d2facc1eb6b52f",
+      "renderedHash": "963920411610af299e9fdaaac13f5857f1b9d7701977999a5bf494f153ba8cb2"
+    },
+    ".specify/extensions/bug/commands/speckit.bug.fix.md": {
+      "moduleId": "bug-extension",
+      "sourcePath": "extensions/bug/commands/speckit.bug.fix.md",
+      "sourceHash": "df8b28b3687617fa883998d060e5402a2baabd34023bef3d1fbcde9e014c5bf6",
+      "renderedHash": "0b9bfb51908969c46b89e56493f3971bea2b96f1d6bd4185bd4972ef98e38649"
+    },
+    ".specify/extensions/bug/commands/speckit.bug.test.md": {
+      "moduleId": "bug-extension",
+      "sourcePath": "extensions/bug/commands/speckit.bug.test.md",
+      "sourceHash": "ac2ab5542b0a9b098af75baad0b23b49e3763b8893eda8497bf234fb5a0df2ff",
+      "renderedHash": "931c247e72e36af419243bf8dc86a3695861f414c560f9d3103fae4634a9080b"
+    },
+    ".specify/extensions/bug/extension.yml": {
+      "moduleId": "bug-extension",
+      "sourcePath": "extensions/bug/extension.yml",
+      "sourceHash": "1d0da5458f3c18ff08cf1602d88cecc33fad07068208951fb7128090cfa90c90",
+      "renderedHash": "1d0da5458f3c18ff08cf1602d88cecc33fad07068208951fb7128090cfa90c90"
+    },
+    ".specify/extensions/bug/README.md": {
+      "moduleId": "bug-extension",
+      "sourcePath": "extensions/bug/README.md",
+      "sourceHash": "39800781430238266d82394686c7332255674f049fdf918980561c4cf17e1112",
+      "renderedHash": "39800781430238266d82394686c7332255674f049fdf918980561c4cf17e1112"
+    },
+    ".specify/init-options.json": {
+      "moduleId": "generated",
+      "sourcePath": ".specify/init-options.json",
+      "sourceHash": "f2517e1c372fe27a0e01da9f59cfce31b64e87199e23564d629ed66c286bc489",
+      "renderedHash": "f2517e1c372fe27a0e01da9f59cfce31b64e87199e23564d629ed66c286bc489"
+    },
+    ".specify/memory/constitution.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/memory/constitution.md",
+      "sourceHash": "7c6ebb5bbe37eebc2ebc6778c852fe9941356fbdb8183de893e003bffb5148ba",
+      "renderedHash": "7c6ebb5bbe37eebc2ebc6778c852fe9941356fbdb8183de893e003bffb5148ba"
+    },
+    ".specify/scripts/bash/check-prerequisites.sh": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/bash/check-prerequisites.sh",
+      "sourceHash": "bb25c7cc0173b824a56cae73ff91044e123dfa14047d2f0de67a312ed805e4ef",
+      "renderedHash": "bb25c7cc0173b824a56cae73ff91044e123dfa14047d2f0de67a312ed805e4ef"
+    },
+    ".specify/scripts/bash/common.sh": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/bash/common.sh",
+      "sourceHash": "af8a16f87b4f9084759c42ff9abf35c0b2a2025dffe58c298758ff86de2923b2",
+      "renderedHash": "af8a16f87b4f9084759c42ff9abf35c0b2a2025dffe58c298758ff86de2923b2"
+    },
+    ".specify/scripts/bash/create-new-feature.sh": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/bash/create-new-feature.sh",
+      "sourceHash": "9ba116b64f0328eb69bc1a195d209074ea38823a73a554160d69df34a74daa65",
+      "renderedHash": "9ba116b64f0328eb69bc1a195d209074ea38823a73a554160d69df34a74daa65"
+    },
+    ".specify/scripts/bash/setup-plan.sh": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/bash/setup-plan.sh",
+      "sourceHash": "4eb12c5b00f5c66a7d01b56c90898d320dcef4425d9b96652d57156c84948eda",
+      "renderedHash": "4eb12c5b00f5c66a7d01b56c90898d320dcef4425d9b96652d57156c84948eda"
+    },
+    ".specify/scripts/bash/setup-tasks.sh": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/bash/setup-tasks.sh",
+      "sourceHash": "45ca99ee6a45bf964233eda33248b30e6b960b1ed881a69dd777e8c3d0b00f21",
+      "renderedHash": "45ca99ee6a45bf964233eda33248b30e6b960b1ed881a69dd777e8c3d0b00f21"
+    },
+    ".specify/scripts/node/check-prerequisites.mjs": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/node/check-prerequisites.mjs",
+      "sourceHash": "8ab005943eb7a6a88a93004d5d03e62ac347a814f854ca4db2c34b4c554ebaf6",
+      "renderedHash": "8ab005943eb7a6a88a93004d5d03e62ac347a814f854ca4db2c34b4c554ebaf6"
+    },
+    ".specify/scripts/node/common.mjs": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/node/common.mjs",
+      "sourceHash": "74cd4bd4f63c465c2c5815bedebea5b7923952db1f5885f59e1d16cf7301a204",
+      "renderedHash": "74cd4bd4f63c465c2c5815bedebea5b7923952db1f5885f59e1d16cf7301a204"
+    },
+    ".specify/scripts/node/create-new-feature.mjs": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/node/create-new-feature.mjs",
+      "sourceHash": "5d10e6afcaf227c8d19ca2261cebb733dfb7401fa7022514f0a199a063c5e5a2",
+      "renderedHash": "5d10e6afcaf227c8d19ca2261cebb733dfb7401fa7022514f0a199a063c5e5a2"
+    },
+    ".specify/scripts/node/setup-plan.mjs": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/node/setup-plan.mjs",
+      "sourceHash": "44f2cc797a9aef81ae3693830f8770fbc15647c6e451cb9ffdec955e028f62e5",
+      "renderedHash": "44f2cc797a9aef81ae3693830f8770fbc15647c6e451cb9ffdec955e028f62e5"
+    },
+    ".specify/scripts/node/setup-tasks.mjs": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/node/setup-tasks.mjs",
+      "sourceHash": "ffd2ab10590a080f5f880f669b881b37a28364561cbe14ba4c49a4bd501cd182",
+      "renderedHash": "ffd2ab10590a080f5f880f669b881b37a28364561cbe14ba4c49a4bd501cd182"
+    },
+    ".specify/scripts/powershell/check-prerequisites.ps1": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/powershell/check-prerequisites.ps1",
+      "sourceHash": "55e6ef3e1e7731ed7f67e3ba1cd8919daf49ac0b1e3120181c48b4e71aaa9ae0",
+      "renderedHash": "55e6ef3e1e7731ed7f67e3ba1cd8919daf49ac0b1e3120181c48b4e71aaa9ae0"
+    },
+    ".specify/scripts/powershell/common.ps1": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/powershell/common.ps1",
+      "sourceHash": "24b5c490efb01f364971b3aac6618873fb56352de2b58815c95bc8e855afab1e",
+      "renderedHash": "24b5c490efb01f364971b3aac6618873fb56352de2b58815c95bc8e855afab1e"
+    },
+    ".specify/scripts/powershell/create-new-feature.ps1": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/powershell/create-new-feature.ps1",
+      "sourceHash": "ae82eae16f18a77e82a413826e98b9e8aa97a518fc73aa4386df5179d53466a8",
+      "renderedHash": "ae82eae16f18a77e82a413826e98b9e8aa97a518fc73aa4386df5179d53466a8"
+    },
+    ".specify/scripts/powershell/setup-plan.ps1": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/powershell/setup-plan.ps1",
+      "sourceHash": "d55b161c13b1a83d10035d2601255698aed6c3a629a44bf0bfa3299c7b42729d",
+      "renderedHash": "d55b161c13b1a83d10035d2601255698aed6c3a629a44bf0bfa3299c7b42729d"
+    },
+    ".specify/scripts/powershell/setup-tasks.ps1": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/scripts/powershell/setup-tasks.ps1",
+      "sourceHash": "08e7338bd24f5654d1bd140991cda232974733c4368ac400ed127b4ddcc4f6c4",
+      "renderedHash": "08e7338bd24f5654d1bd140991cda232974733c4368ac400ed127b4ddcc4f6c4"
+    },
+    ".specify/templates/agent-file-template.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/templates/agent-file-template.md",
+      "sourceHash": "55ed438c2e861444ef22f45fe5238f3ebf0dc1cb6e53067d7232fbbf4ce82892",
+      "renderedHash": "55ed438c2e861444ef22f45fe5238f3ebf0dc1cb6e53067d7232fbbf4ce82892"
+    },
+    ".specify/templates/architect/architecture-spec-template.md": {
+      "moduleId": "architect",
+      "sourcePath": "specify/templates/architect/architecture-spec-template.md",
+      "sourceHash": "55ca814596996ef4f2e866e266c7c6604e488f53e03c4282edd9b9c3a7de7ce8",
+      "renderedHash": "55ca814596996ef4f2e866e266c7c6604e488f53e03c4282edd9b9c3a7de7ce8"
+    },
+    ".specify/templates/checklist-template.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/templates/checklist-template.md",
+      "sourceHash": "312eee8291dfa984b21f95ddd0ca778e7a1f0b3a64bfc470d79762a3e3f5d7b8",
+      "renderedHash": "312eee8291dfa984b21f95ddd0ca778e7a1f0b3a64bfc470d79762a3e3f5d7b8"
+    },
+    ".specify/templates/constitution-template.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/templates/constitution-template.md",
+      "sourceHash": "ce7549540fa45543cca797a150201d868e64495fdff39dc38246fb17bd4024b3",
+      "renderedHash": "ce7549540fa45543cca797a150201d868e64495fdff39dc38246fb17bd4024b3"
+    },
+    ".specify/templates/contracts/kafka-contract-template.md": {
+      "moduleId": "contracts",
+      "sourcePath": "specify/templates/contracts/kafka-contract-template.md",
+      "sourceHash": "1eab432228e4f04c237d46d7be5fb258ebfa1245f16cef7dfa90f626180c27a1",
+      "renderedHash": "1eab432228e4f04c237d46d7be5fb258ebfa1245f16cef7dfa90f626180c27a1"
+    },
+    ".specify/templates/contracts/rabbitmq-contract-template.md": {
+      "moduleId": "contracts",
+      "sourcePath": "specify/templates/contracts/rabbitmq-contract-template.md",
+      "sourceHash": "913187236cf91db145820c779b6dfabbdb76eaa47f9e91b63db3a59ccc0fbd23",
+      "renderedHash": "913187236cf91db145820c779b6dfabbdb76eaa47f9e91b63db3a59ccc0fbd23"
+    },
+    ".specify/templates/contracts/README.md": {
+      "moduleId": "contracts",
+      "sourcePath": "specify/templates/contracts/README.md",
+      "sourceHash": "5ddfa7ec2014147fd7ad9b06e917c3ad02b90b0d73628634d7c4c7ee415b3aed",
+      "renderedHash": "5ddfa7ec2014147fd7ad9b06e917c3ad02b90b0d73628634d7c4c7ee415b3aed"
+    },
+    ".specify/templates/plan-template.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/templates/plan-template.md",
+      "sourceHash": "fb4334e8cfa8e01b529b31ed04fcff7f823c9cf2ccc0070380ac1de12450d8d6",
+      "renderedHash": "fb4334e8cfa8e01b529b31ed04fcff7f823c9cf2ccc0070380ac1de12450d8d6"
+    },
+    ".specify/templates/README.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/templates/README.md",
+      "sourceHash": "63048a90eced8053fd4dd49579285ca375108b9791e70ec17a4dd793b384b936",
+      "renderedHash": "63048a90eced8053fd4dd49579285ca375108b9791e70ec17a4dd793b384b936"
+    },
+    ".specify/templates/spec-template.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/templates/spec-template.md",
+      "sourceHash": "eea44798ad5256ff2003367c11fd3a39fdde97025915e029bd3ef42b99ff0fa5",
+      "renderedHash": "eea44798ad5256ff2003367c11fd3a39fdde97025915e029bd3ef42b99ff0fa5"
+    },
+    ".specify/templates/tasks-template.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/templates/tasks-template.md",
+      "sourceHash": "d89448eec8dabbdee040bb9c0ebec031a46ee76d09b7771acc0d98105adae794",
+      "renderedHash": "d89448eec8dabbdee040bb9c0ebec031a46ee76d09b7771acc0d98105adae794"
+    },
+    ".specify/templates/tasks/task-detail-template.md": {
+      "moduleId": "task-details",
+      "sourcePath": "specify/templates/tasks/task-detail-template.md",
+      "sourceHash": "5d6b755465518a683c39da46170610e72774120779c397ee7bc5841d707022b8",
+      "renderedHash": "5d6b755465518a683c39da46170610e72774120779c397ee7bc5841d707022b8"
+    },
+    ".specify/workflows/README.md": {
+      "moduleId": "generated",
+      "sourcePath": ".specify/workflows/README.md",
+      "sourceHash": "b3acfe670ee8db19bab87d4dde3ac03d451c1eec91632a8fd8e9a004ed0705cb",
+      "renderedHash": "b3acfe670ee8db19bab87d4dde3ac03d451c1eec91632a8fd8e9a004ed0705cb"
+    },
+    ".specify/workflows/speckit/workflow.yml": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/workflows/speckit/workflow.yml",
+      "sourceHash": "a3b7c17724df02c7f2ad4cfc58435dd428f11eaa13bd07fa5e46f7726142b2b7",
+      "renderedHash": "a3b7c17724df02c7f2ad4cfc58435dd428f11eaa13bd07fa5e46f7726142b2b7"
+    },
+    ".specify/workflows/workflow-registry.json": {
+      "moduleId": "core-specify",
+      "sourcePath": "specify/workflows/workflow-registry.json",
+      "sourceHash": "169dc63e98fbc19e990b5142ac9c2241b521479af2e88d7745bc15c9ea54d4db",
+      "renderedHash": "169dc63e98fbc19e990b5142ac9c2241b521479af2e88d7745bc15c9ea54d4db"
+    },
+    "AGENTS.md": {
+      "moduleId": "ai-opencode",
+      "sourcePath": "rules/docs.md",
+      "sourceHash": "10c6cdf0823e8b2958093c499155785e27d2982620833a002054362147bc5381",
+      "renderedHash": "10c6cdf0823e8b2958093c499155785e27d2982620833a002054362147bc5381"
+    },
+    "docs/acl.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "docs/acl.md",
+      "sourceHash": "d577d059cbaf79863447d81a1361031b18e63ba5df6ad2510a422d337145cd63",
+      "renderedHash": "d577d059cbaf79863447d81a1361031b18e63ba5df6ad2510a422d337145cd63"
+    },
+    "docs/database-schema.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "docs/database-schema.md",
+      "sourceHash": "a0ad919406f6c3acedbb828926782f75814270550ac047f4c8735de527d0e403",
+      "renderedHash": "a0ad919406f6c3acedbb828926782f75814270550ac047f4c8735de527d0e403"
+    },
+    "docs/db_schema/global_users.dbml.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "docs/db_schema/global_users.dbml.md",
+      "sourceHash": "246421e0c26078e0e988ea64eab75a63ae66809e4077f22bb4f0bd2d12caece0",
+      "renderedHash": "246421e0c26078e0e988ea64eab75a63ae66809e4077f22bb4f0bd2d12caece0"
+    },
+    "docs/index.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "docs/index.md",
+      "sourceHash": "f8e0e85e1fa0d6a76a816bca7a6b748a6578bdd1c848343f7e0d7e5fd8fa5382",
+      "renderedHash": "f8e0e85e1fa0d6a76a816bca7a6b748a6578bdd1c848343f7e0d7e5fd8fa5382"
+    },
+    "docs/rules/index.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "docs/rules/index.md",
+      "sourceHash": "2eec64d584faddffc8c9aef8dd28adc50851ac6ae17e1cedcabb93c990adb603",
+      "renderedHash": "2eec64d584faddffc8c9aef8dd28adc50851ac6ae17e1cedcabb93c990adb603"
+    },
+    "docs/rules/spring-boot.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "docs/rules/spring-boot.md",
+      "sourceHash": "416c03d35d3742e89b849c685039992c3bad71c7ec0f09a5ca7421a5572e9046",
+      "renderedHash": "416c03d35d3742e89b849c685039992c3bad71c7ec0f09a5ca7421a5572e9046"
+    },
+    "docs/tech-stack.md": {
+      "moduleId": "core-specify",
+      "sourcePath": "docs/tech-stack.md",
+      "sourceHash": "3695ae9490222a277b0ce83fd15d7f37a99da8a136fb0d93e0b0bcc67bc31244",
+      "renderedHash": "3695ae9490222a277b0ce83fd15d7f37a99da8a136fb0d93e0b0bcc67bc31244"
+    }
+  },
+  "presets": [],
+  "externalSkillsSource": {
+    "source": "https://pcggit.pouchen.com/devai/skills.git",
+    "commit": "ead62270a349159e33885a0164b5309edfb9f980"
+  }
+}

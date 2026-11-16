@@ -1,0 +1,31 @@
+# Default branch convention for this template.
+# Installed to .specify/branch-convention.yml.
+convention:
+  preset: gitflow
+  branch_pattern: "{type}/{seq}-{kebab}"
+  folder_pattern: "{seq}-{kebab}"
+  type_prefix:
+    feature: "feat"
+    bugfix: "fix"
+    hotfix: "hotfix"
+    refactor: "refactor"
+    docs: "docs"
+  default_type: "feat"
+  seq_padding: 3
+  seq_start: 1
+  date_format: "YYYYMMDD"
+  ticket_pattern: "[A-Z]+-[0-9]+"
+  max_length: 60
+  separator: "-"
+  lowercase: true
+
+# Enforcement settings — control how validate behaves when called via hooks.
+enforcement:
+  # "enforce" — automatically rename non-compliant branches without stopping to ask
+  # "prompt"  — show violations and ask the user before renaming
+  # "report"  — read-only; only print the compliance report (original behaviour)
+  mode: enforce
+  # When true, the validate hook will also suggest the correct GIT_BRANCH_NAME to
+  # the AI agent BEFORE git.feature has a chance to create a branch.
+  # This relies on the AI picking up the convention from the validate output.
+  suggest_branch_name: true

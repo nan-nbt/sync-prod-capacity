@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "ai": "opencode",
+  "language": "English",
+  "presets": [],
+  "script": "node",
+  "profiles": [
+    "core"
+  ],
+  "selectedMcps": [],
+  "selectedModules": [
+    "architect",
+    "bug-extension",
+    "contracts",
+    "conventional-commit",
+    "speckit-constitution-authoring-skill",
+    "task-details"
+  ]
+}

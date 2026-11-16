@@ -18,3 +18,30 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+# PCG Spec Kit installed commands START
+/.opencode/commands/speckit.agent-context.update.md
+/.opencode/commands/speckit.analyze.md
+/.opencode/commands/speckit.branch-convention.configure.md
+/.opencode/commands/speckit.branch-convention.rename.md
+/.opencode/commands/speckit.branch-convention.validate.md
+/.opencode/commands/speckit.brownfield.bootstrap.md
+/.opencode/commands/speckit.brownfield.migrate.md
+/.opencode/commands/speckit.brownfield.scan.md
+/.opencode/commands/speckit.brownfield.validate.md
+/.opencode/commands/speckit.bug.assess.md
+/.opencode/commands/speckit.bug.fix.md
+/.opencode/commands/speckit.bug.test.md
+/.opencode/commands/speckit.checklist.md
+/.opencode/commands/speckit.clarify.md
+/.opencode/commands/speckit.constitution.md
+/.opencode/commands/speckit.converge.md
+/.opencode/commands/speckit.implement.md
+/.opencode/commands/speckit.plan.md
+/.opencode/commands/speckit.specify.md
+/.opencode/commands/speckit.tasks.md
+/.opencode/commands/speckit.taskstoissues.md
+# PCG Spec Kit installed commands END
+# PCG Spec Kit installed skills START
+/.agents/skills/conventional-commit/
+/.agents/skills/speckit-constitution-authoring/
+# PCG Spec Kit installed skills END
