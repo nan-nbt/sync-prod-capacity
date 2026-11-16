@@ -128,6 +128,7 @@ root project
 
 ## Unit Testing and Testing Culture
 
+- Tests MUST be written test-first: the test is committed, and observed failing, in a commit that does not yet contain its implementation.
 - Backend unit tests use JUnit 5 + Mockito
 - Maintain describe groupings, using beforeEach / afterEach for setup and teardown
 - Use mock objects to isolate units

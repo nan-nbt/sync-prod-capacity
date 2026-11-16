@@ -11,9 +11,6 @@ This project requires all specification documents, explanatory documents, and ch
 - Documents must maintain consistent format structure (title levels, lists, chapter order)
 - Including template files, please adjust to [English] format
 
-### Prohibited:
-- Prohibit writing complete chapters in English (unless explicitly requested by the user)
-
 ### Interaction with AI Process
 - When users interact with AI, [English] is the primary language, so AI responses should also be primarily in [English]
 - Proper nouns still retain English

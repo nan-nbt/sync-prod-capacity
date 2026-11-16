@@ -10,6 +10,22 @@
 
 [Extract from feature spec: primary requirement + technical approach from research]
 
+## Existing Design Confirmation
+
+<!--
+  ACTION REQUIRED (CONST-PLAN-1, CONST-STACK-1): Complete this table BEFORE any technical design.
+  - List every authoritative document under docs/ relevant to this feature (file path + section or ID).
+  - List EVERY item of docs/tech-stack.md (section + item number, e.g. "Backend #6"), not only relevant ones.
+  - Applicable: expand to dependencies, configuration keys, initialization flow, target file paths, verification.
+  - Not Applicable: give rationale, impact, and alternative.
+  - Conflict or gap with the requirements: move it to "Needs Clarification"; do not design around it.
+-->
+
+| Source (path + section/item) | Status | Implementation Detail / Rationale | Verification |
+|------------------------------|--------|-----------------------------------|--------------|
+| `docs/tech-stack.md` Backend #1 | Applicable | [deps, config keys, init flow, file paths] | [how verified] |
+| `docs/tech-stack.md` Backend #8 | Not Applicable | [rationale, impact, alternative] | N/A |
+
 ## Technical Context
 
 <!--
@@ -40,7 +56,48 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- [ ] **CONST-SPEC-2**: Every unresolved `[NEEDS CLARIFICATION]` from the spec is carried into `Needs Clarification`
+- [ ] **CONST-SPEC-3**: Existing specs/designs are referenced by path + section, not re-created; amendments use a `Change Request`
+- [ ] **CONST-PLAN-1**: `Existing Design Confirmation` covers every relevant doc and every `docs/tech-stack.md` item
+- [ ] **CONST-PLAN-2**: Every new operational, dependency, or configuration fact is in `Authoritative Source Writeback List`
+- [ ] **CONST-PLAN-3**: If `plan.md`/`tasks.md` already existed, changes are localized patches with reason and scope
+- [ ] **CONST-STACK-1**: Security, identity, health-probe, API-doc, and secret components are introduced only when the runtime form requires them
+- [ ] **CONST-CONTRACT-1**: External contracts are recorded in `contracts/`; every own API operation is mapped in `Contract Coverage`
+- [ ] **CONST-TEST-1**: Test strategy covers success, failure, boundary, and configuration loading; tests are written first
+- [ ] **CONST-QUALITY-1**: Environment-dependent values are externalized; batched writes declare batch size and partial-failure behavior
+- [ ] **CONST-MODULE-1**: Shared-module placement is justified by at least two consuming modules; entry points only bootstrap
+- [ ] **CONST-DOC-1 / CONST-DEV-1**: Design follows `docs/rules/` and `docs/tech-stack.md`
+- [ ] **CONST-LANG-1**: Document is in English and keeps this template's section hierarchy
+
+## Implementation Details
+
+<!--
+  ACTION REQUIRED (CONST-PLAN-1): Fill each item where applicable; write "N/A - [reason]" otherwise.
+  Every key decision MUST cite its source (doc path + section) and rationale.
+-->
+
+- **File paths**: [new/changed files and classes]
+- **Dependencies**: [added or changed dependencies]
+- **Configuration keys**: [keys, defaults, per-profile values]
+- **Initialization flow**: [startup and wiring order]
+- **Security / ACL**: [or N/A - reason]
+- **Error format**: [or N/A - reason]
+- **Observability / logging**: [log events, context fields, metrics]
+- **Batch behavior**: [batch size and partial-failure behavior, or N/A]
+- **Deployment**: [runtime form, probes, packaging]
+- **Rollback**: [how to revert safely]
+
+## Contract Coverage
+
+<!--
+  CONST-CONTRACT-1: Include only when the feature has contracts/. Map every API operation (path + method)
+  to a User Story or requirement. An unmapped operation is a blocker and MUST go to "Needs Clarification".
+  External-system contracts consumed by this feature MUST also be listed here with their contracts/ file.
+-->
+
+| Contract (file + operation) | User Story / Requirement |
+|-----------------------------|--------------------------|
+| `contracts/[file]` `GET /v1/[resource]` | US1 / FR-001 |
 
 ## Project Structure
 
@@ -102,6 +159,28 @@ ios/ or android/
 
 **Structure Decision**: [Document the selected structure and reference the real
 directories captured above]
+
+## Needs Clarification
+
+<!--
+  CONST-SPEC-2, CONST-PLAN-1, CONST-TASK-2: Unresolved spec markers, conflicts or gaps against
+  authoritative docs, unavailable contracts, and items no task can cover. Do not fill these by assumption.
+-->
+
+| ID | Question / Conflict | Source | Blocking? |
+|----|---------------------|--------|-----------|
+| NC-001 | [description] | [doc path + section, or spec marker] | Yes/No |
+
+## Authoritative Source Writeback List
+
+<!--
+  CONST-PLAN-2: Every operational, dependency, or configuration fact introduced by this plan.
+  Each entry MUST be written back to docs/ before merge.
+-->
+
+| Target Document (docs/...) | Change Summary | Status |
+|----------------------------|----------------|--------|
+| `docs/[file].md` [section] | [one-line summary] | Pending/Done |
 
 ## Complexity Tracking
 

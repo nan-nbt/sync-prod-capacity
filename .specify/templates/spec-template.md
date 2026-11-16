@@ -16,6 +16,9 @@
   you should still have a viable MVP (Minimum Viable Product) that delivers value.
 
   Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
+  CONST-SPEC-1: At least TWO user stories are required, and the first MUST be P1. Each story needs
+  its value, priority, an independent test, and at least one Given/When/Then scenario describing
+  observable behavior. Do not put implementation details (paths, dependencies, config) in the spec.
   Think of each story as a standalone slice of functionality that can be:
   - Developed independently
   - Tested independently
@@ -123,9 +126,25 @@
   ACTION REQUIRED: The content in this section represents placeholders.
   Fill them out with the right assumptions based on reasonable defaults
   chosen when the feature description did not specify certain details.
+  CONST-SPEC-2: A default is allowed only if recorded here. A gap that changes scope, security,
+  or user-visible behavior MUST be marked [NEEDS CLARIFICATION] instead.
 -->
 
 - [Assumption about target users, e.g., "Users have stable internet connectivity"]
 - [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
 - [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
 - [Dependency on existing system/service, e.g., "Requires access to the existing user profile API"]
+
+## Change Request *(include only when amending an existing spec)*
+
+<!--
+  CONST-SPEC-3: An existing spec under docs/ or specs/ is the sole baseline. Reference it by
+  file path + section/ID; never re-create it. List every proposed change here instead of
+  overwriting the original requirement.
+-->
+
+**Baseline**: [path to existing spec + section/ID]
+
+| Change | Reason | Affected Sections | Blocking? |
+|--------|--------|-------------------|-----------|
+| [what changes] | [why] | [section/ID] | Yes/No |

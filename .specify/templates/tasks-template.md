@@ -9,15 +9,18 @@ description: "Task list template for feature implementation"
 
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
+**Tests**: Tests are REQUIRED for every core behavior change (CONST-TEST-1). Each test task MUST precede the implementation task it covers, and the test MUST be observed failing on an assertion before that implementation exists. Tests cover the success path, failure path, boundary conditions, and configuration loading.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
-## Format: `[ID] [P?] [Story] Description`
+## Format: `[ID] [P?] [Story] Description in <path> — DoD: <done condition> — Verify: <method>`
 
 - **[P]**: Can run in parallel (different files, no dependencies)
 - **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
-- Include exact file paths in descriptions
+- **Description**: MUST name the exact file path, class, or package (CONST-TASK-1)
+- **DoD**: Definition of Done - the artifact or behavior that proves completion (CONST-TASK-1)
+- **Verify**: At least one verification method proportionate to the task, e.g. unit test, contract validation, health check, log observation (CONST-TASK-1)
+- Each task fits 0.5-1 person-day; milestone tasks such as "complete backend feature" are prohibited
 
 ## Path Conventions
 
@@ -80,21 +83,21 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 1 (OPTIONAL - only if tests requested) WARNING:
+### Tests for User Story 1 (REQUIRED for core behavior changes - CONST-TEST-1)
 
-> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+> **NOTE: Write these tests FIRST, ensure they FAIL on an assertion before implementation**
 
-- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py — DoD: test asserts the contract in contracts/[file] — Verify: test runs and fails before T015
+- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py — DoD: success, failure, and boundary cases written — Verify: test runs and fails before T014
 
 ### Implementation for User Story 1
 
-- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
-- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T016 [US1] Add validation and error handling
-- [ ] T017 [US1] Add logging for user story 1 operations
+- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py — DoD: model matches data-model.md — Verify: unit test
+- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py — DoD: model matches data-model.md — Verify: unit test
+- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013) — DoD: T011 passes — Verify: T011
+- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py — DoD: T010 passes — Verify: T010
+- [ ] T016 [US1] Add validation and error handling in src/[location]/[file].py — DoD: errors use the uniform error format — Verify: failure-path test
+- [ ] T017 [US1] Add logging for user story 1 operations in src/services/[service].py — DoD: start/end/failure events logged with context — Verify: log observation
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -106,7 +109,7 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 2 (OPTIONAL - only if tests requested) WARNING:
+### Tests for User Story 2 (REQUIRED for core behavior changes - CONST-TEST-1)
 
 - [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
 - [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
@@ -128,7 +131,7 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 3 (OPTIONAL - only if tests requested) WARNING:
+### Tests for User Story 3 (REQUIRED for core behavior changes - CONST-TEST-1)
 
 - [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
 - [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
@@ -154,9 +157,25 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX [P] Documentation updates in docs/
 - [ ] TXXX Code cleanup and refactoring
 - [ ] TXXX Performance optimization across all stories
-- [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
+- [ ] TXXX [P] Additional unit tests in tests/unit/
 - [ ] TXXX Security hardening
 - [ ] TXXX Run quickstart.md validation
+- [ ] TXXX [P] Write back every `Authoritative Source Writeback List` entry from plan.md to docs/ (CONST-PLAN-2)
+
+---
+
+## Coverage Matrix
+
+<!--
+  CONST-TASK-2: Map EVERY "Applicable" item from plan.md "Existing Design Confirmation" and EVERY
+  operation in contracts/ to at least one task ID. An item no task can cover MUST be listed, with its
+  blocking reason, in plan.md "Needs Clarification" and "Authoritative Source Writeback List".
+-->
+
+| Source (Applicable item or contract operation) | Task IDs |
+|------------------------------------------------|----------|
+| `docs/tech-stack.md` Backend #1 | T002 |
+| `contracts/[file]` `GET /v1/[resource]` | T010, T015 |
 
 ---
 
@@ -179,7 +198,7 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Within Each User Story
 
-- Tests (if included) MUST be written and FAIL before implementation
+- Tests MUST be written and FAIL before implementation (CONST-TEST-1)
 - Models before services
 - Services before endpoints
 - Core implementation before integration
@@ -199,7 +218,7 @@ Examples of foundational tasks (adjust based on your project):
 ## Parallel Example: User Story 1
 
 ```bash
-# Launch all tests for User Story 1 together (if tests requested):
+# Launch all tests for User Story 1 together:
 Task: "Contract test for [endpoint] in tests/contract/test_[name].py"
 Task: "Integration test for [user journey] in tests/integration/test_[name].py"
 
@@ -247,6 +266,7 @@ With multiple developers:
 - [Story] label maps task to specific user story for traceability
 - Each user story should be independently completable and testable
 - Verify tests fail before implementing
+- API endpoint work MUST be split into: request/response model + controller, use case, data access, security, error mapping, API documentation, documentation writeback - omit only categories plan.md marks Not Applicable (CONST-TASK-1)
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
 - Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence
