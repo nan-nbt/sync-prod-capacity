@@ -1,0 +1,39 @@
+schema_version: "1.0"
+
+extension:
+  id: branch-convention
+  name: "Branch Convention"
+  version: "1.0.0"
+  description: "Configurable branch and folder naming conventions for /specify with presets and custom patterns"
+  author: "Quratulain-bilal"
+  repository: "https://github.com/Quratulain-bilal/spec-kit-branch-convention"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=0.4.0"
+
+provides:
+  commands:
+    - name: speckit.branch-convention.configure
+      file: commands/speckit.branch-convention.configure.md
+      description: "Set up branch and folder naming rules for the current project"
+    - name: speckit.branch-convention.validate
+      file: commands/speckit.branch-convention.validate.md
+      description: "Validate branch/folder names and enforce compliance based on enforcement.mode in branch-convention.yml (report | prompt | enforce)"
+    - name: speckit.branch-convention.rename
+      file: commands/speckit.branch-convention.rename.md
+      description: "Rename non-compliant branches and spec folders to match the configured convention"
+
+hooks:
+  after_specify:
+    command: node .specify/extensions/branch-convention/scripts/create-branch-from-feature.mjs --json
+    optional: false
+    prompt: "Create/switch to a branch that follows branch-convention.yml?"
+    description: "Create or switch to a convention-compliant Git branch after /speckit.specify writes the feature directory"
+
+tags:
+  - "branch"
+  - "naming"
+  - "convention"
+  - "gitflow"
+  - "workflow"
