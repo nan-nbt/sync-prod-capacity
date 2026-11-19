@@ -56,7 +56,7 @@
 
 - [ ] **CONST-SCOPE-1**: The plan contains no product capability outside the agreed transfer scope.
 - [ ] **CONST-REQ-1**: Requirements are separated from technology decisions; unresolved behavior is surfaced for review.
-- [ ] **CONST-TRANSFER-1**: A required input controls the requested quantity of previous-day source data, and source/target are in the same database.
+- [ ] **CONST-TRANSFER-1**: A required, validated input controls the source data selection; the plan and specification state the requested quantity and time period, including whether the run date is included.
 - [ ] **CONST-SIMPLE-1**: The design uses the smallest readable approach that meets requirements.
 - [ ] **CONST-REVIEW-1**: Material design/technology decisions are presented to the owner, with approval or rejection and rationale recorded before implementation; resulting behavior has verification coverage.
 

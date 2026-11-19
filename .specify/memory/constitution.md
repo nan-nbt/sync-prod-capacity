@@ -1,32 +1,28 @@
 <!-- Sync Impact Report
-Version change: 1.0.0 → 2.0.0
-Bump rationale: MAJOR — replace the existing ETL-platform governance with principles
-  for a small personal data-transfer application, materially redefining project scope,
-  design and quality policy.
-Modified principles: All prior principles replaced by Scope Discipline, Requirements
-  Before Technology, Explicit Transfer Input, Readable Simplicity, and Reviewed Decisions
-  and Verified Behavior.
-Added sections: Core Principles; Governance; Rule ID Index.
-Removed sections: Additional Constraints; Review Gates and their ETL-platform-specific
-  rules, source-constitution traceability and deprecated-rule mappings.
+Version change: 2.0.0 → 3.0.0
+Bump rationale: MAJOR — redefine CONST-TRANSFER-1 so a transfer's required, validated input
+  specifies an explicit time period, no longer requiring a previous-day period.
+Modified principles:
+  CONST-TRANSFER-1 Explicit Transfer Input → Explicit Transfer Window
+Added sections: None
+Removed sections: None
 Templates requiring updates:
-  ✅ .specify/templates/plan-template.md — Constitution Check, technology-neutral proposal table, and
-     owner-review gate now reflect scope, decisions, transfer input, simplicity, and verification.
-  ✅ .specify/templates/spec-template.md — Story count is optional within scope; transfer input,
-     same-database result, and quantity/time semantics are prompted without technology prescriptions.
-  ✅ .specify/templates/tasks-template.md — tasks are scope-limited, gated on owner decisions, and
-     verify requested quantity; legacy rule references were removed or rewritten.
-  ✅ .specify/templates/checklist-template.md — opened; no constitution-mandated fields or rule IDs,
-     no change required.
-  ✅ .opencode/commands/*.md — command files reviewed; no references to old CONST rule IDs; no
-     constitution-specific update needed.
-  ✅ AGENTS.md, README.md, docs/index.md, docs/tech-stack.md, docs/database-schema.md,
-     docs/rules/spring-boot.md — reviewed. Existing stack/backend specifics remain separate; the
-     plan template no longer seeds ETL-specific examples. Projects must apply reference guidance only
-     when relevant to the approved app and its selected technology.
-Authoritative Source Writeback List: None. No implementation-specific detail was promoted into the
-  constitution or extracted from it that requires writeback.
-Follow-up TODOs: Ratification date is retained from the existing constitution (2026-11-16).
+  ✅ .specify/templates/plan-template.md — Constitution Check now requires an explicit
+     quantity and period, including whether the run date is included.
+  ✅ .specify/templates/spec-template.md — guidance prompts for the requested quantity and
+     time period without prescribing previous-day selection.
+  ✅ .specify/templates/tasks-template.md — verification covers requested quantity and period.
+  ✅ .specify/templates/checklist-template.md — opened; no rule IDs or transfer-period
+     requirements to update.
+  ✅ .specify/templates/commands/*.md — no such directory exists; no command template
+     references to update.
+  ✅ .opencode/commands/*.md — repository search found no stale previous-day or
+     CONST-TRANSFER-1 guidance in command files.
+  ✅ AGENTS.md, README.md, docs/index.md, docs/tech-stack.md, docs/rules/spring-boot.md —
+     reviewed; none prescribe a previous-day transfer period.
+Authoritative Source Writeback List:
+  None. The exact time window remains feature-specific and is recorded in its specification.
+Follow-up TODOs: None.
 -->
 # Personal Data Transfer Constitution
 
@@ -50,15 +46,14 @@ proposal as an approved project decision.
 
 Rationale: separating what the application must do from how it is built enables informed review.
 
-### CONST-TRANSFER-1 Explicit Transfer Input
+### CONST-TRANSFER-1 Explicit Transfer Window
 
-Every transfer execution MUST require an input value specifying how much data from the previous day
-to transfer. The value MUST be validated before transfer begins, and the selected source data MUST
-conform to that requested quantity and previous-day period. The plan and specification MUST make the
-observable meaning of the requested quantity and previous-day period explicit wherever ambiguity
-would change behavior.
+Every transfer execution MUST require a value that specifies the quantity and time period of source
+data to transfer. The value MUST be validated before transfer begins, and the selected source data MUST
+conform to the requested quantity and time period. The specification and plan MUST state the observable
+meaning of the requested quantity and time period, including whether the run date is included.
 
-Rationale: requiring and validating the transfer input makes each run intentional and testable.
+Rationale: explicit, validated selection boundaries make each run intentional and testable.
 
 ### CONST-SIMPLE-1 Readable Simplicity
 
@@ -91,7 +86,7 @@ amendment MUST update the Sync Impact Report and Rule ID Index and reconcile dep
 templates. Before accepting a change, reviewers MUST confirm it follows these principles and that
 relevant automated tests verify the resulting behavior.
 
-**Version**: 2.0.0 | **Ratified**: 2026-11-16 | **Last Amended**: 2026-11-18
+**Version**: 3.0.0 | **Ratified**: 2026-11-16 | **Last Amended**: 2026-11-18
 
 ---
 
@@ -101,6 +96,6 @@ relevant automated tests verify the resulting behavior.
 | :-- | :-- | :-- |
 | CONST-SCOPE-1 | Scope discipline | spec, plan, tasks |
 | CONST-REQ-1 | Requirements before technology | spec, plan |
-| CONST-TRANSFER-1 | Explicit transfer input | spec, plan, tasks |
+| CONST-TRANSFER-1 | Explicit transfer window | spec, plan, tasks |
 | CONST-SIMPLE-1 | Readable simplicity | plan |
 | CONST-REVIEW-1 | Reviewed decisions and verified behavior | plan, tasks, review |

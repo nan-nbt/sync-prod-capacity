@@ -32,5 +32,5 @@
 ## Notes
 
 - Validation of the specification found no missing requirement details; the success outcomes cannot be demonstrated until implementation and acceptance testing.
-- Governance blocker: `CONST-TRANSFER-1` requires the selected data to conform to a previous-day period, while FR-002 and FR-005 include today and allow `days=1` to select only today. The owner must resolve the constitution conflict before implementation planning can be approved.
+- Governance conflict resolved by constitution version 3.0.0: `CONST-TRANSFER-1` permits the time period specified in FR-002 and FR-005.
 - Items marked incomplete require spec updates or verification before `/speckit.clarify` or `/speckit.plan`.

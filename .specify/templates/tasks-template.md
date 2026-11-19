@@ -12,7 +12,7 @@ pending owner review (CONST-REVIEW-1).
 
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: Automated tests MUST verify approved transfer behavior, including success, invalid or missing input, boundary quantities, and relevant data-selection or persistence failures (CONST-REVIEW-1). Tests MUST be written before implementation and observed failing on an assertion before the covered implementation exists. Tasks MUST implement only agreed requirements (CONST-SCOPE-1) and verify the requested previous-day transfer quantity (CONST-TRANSFER-1).
+**Tests**: Automated tests MUST verify approved transfer behavior, including success, invalid or missing input, boundary quantities, and relevant data-selection or persistence failures (CONST-REVIEW-1). Tests MUST be written before implementation and observed failing on an assertion before the covered implementation exists. Tasks MUST implement only agreed requirements (CONST-SCOPE-1) and verify the requested transfer quantity and specified time period (CONST-TRANSFER-1).
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 

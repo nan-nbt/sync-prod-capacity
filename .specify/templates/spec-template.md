@@ -24,9 +24,9 @@
   and the selected technology; do not add product features merely because a reference describes them.
   Keep the story set limited to independently valuable parts of approved scope. One story is
   acceptable when it fully covers a small application; do not add stories to satisfy a count.
-  For this data-transfer application, capture the required input for the amount of previous-day
-  data and the same-database source-to-target outcome. State the observable meaning of amount and
-  previous day, or mark behavior-changing ambiguity for owner review.
+  CONST-TRANSFER-1: Capture the required, validated selection input and the same-database
+  source-to-target outcome. State the observable meaning of the requested quantity and time period,
+  including whether the run date is included, or mark behavior-changing ambiguity for owner review.
 -->
 
 ### User Story 1 - [Brief Title] (Priority: P1)
