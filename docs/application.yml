@@ -1,0 +1,6 @@
+postgresql:
+  datasource:
+    url: jdbc:postgresql://pgdb-iddbalab.id.pouchen.com:5432/src_db
+    username: devuser
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
