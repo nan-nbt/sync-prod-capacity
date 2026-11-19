@@ -16,6 +16,8 @@
 - Q: What should happen if source records change during a run? → A: Use one consistent snapshot of eligible source records for the run.
 - Q: How should the transfer handle concurrent changes to target records it must insert or update? → A: Fail and roll back the run rather than overwrite the concurrent change.
 - Q: When does the target conflict-detection period begin? → A: When the run first checks the target record or determines that no matching target record exists; it ends at transfer commit.
+- Q: How should the application signal invalid input or a failed transfer? → A: Print a clear error message and return a non-zero process exit code.
+- Q: How should target changes be applied when a run has multiple eligible records? → A: Apply all inserts and updates atomically; any failure rolls back the entire run.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -47,8 +49,8 @@ As the application owner, I want invalid requests and transfer failures to leave
 
 **Acceptance Scenarios**:
 
-1. **Given** `days` is absent, zero, negative, fractional, nonnumeric, or outside the representable date range, **When** the owner launches the application, **Then** it reports an error before changing any target data.
-2. **Given** at least one target write has occurred during a transfer, **When** a later selection or write fails, **Then** the run reports failure and none of that run's target changes remain.
+1. **Given** `days` is absent, zero, negative, fractional, nonnumeric, or outside the representable date range, **When** the owner launches the application, **Then** it prints an error, returns a non-zero exit code, and does not change any target data.
+2. **Given** at least one target write has occurred during a transfer, **When** a later selection or write fails, **Then** the run prints an error, returns a non-zero exit code, and none of that run's target changes remain.
 3. **Given** a successful run, **When** the owner repeats it with the same window and unchanged source data, **Then** no duplicate target records are created and unchanged target timestamps remain unchanged.
 4. **Given** another process changes a target record that the run must insert or update, **When** the concurrent change conflicts with the transfer, **Then** the run reports failure, rolls back its own target changes, and does not overwrite the other process's change.
 
@@ -67,7 +69,7 @@ As the application owner, I want invalid requests and transfer failures to leave
 
 - **FR-001**: The owner MUST explicitly launch each run; the application MUST NOT run transfers on a schedule or automatically.
 - **FR-002**: Each run MUST accept the externally supplied command-line argument `--days=<value>`, where the value is a positive integer number of calendar days including the run date.
-- **FR-003**: The application MUST report a missing, invalid, or unrepresentable `days` value before changing any target data.
+- **FR-003**: The application MUST report a clear error for a missing, invalid, or unrepresentable `days` value before changing any target data and MUST return a non-zero process exit code.
 - **FR-004**: At the start of each run, the application MUST determine the run date once using the fixed UTC+08:00 offset and retain that date window for the entire run.
 - **FR-005**: The window MUST start inclusively at midnight UTC+08:00 on the date `(days - 1)` calendar days before the run date and end exclusively at midnight UTC+08:00 immediately after the run date.
 - **FR-006**: The application MUST select source records from one consistent snapshot for the run, including only records whose `created_at` falls in that window, regardless of production record date or source last-updated timestamp. Source changes after that snapshot MUST NOT affect the run.
@@ -81,7 +83,7 @@ As the application owner, I want invalid requests and transfer failures to leave
 - **FR-014**: Repeating a successful run with unchanged source data and the same window MUST NOT create duplicates or change identical records.
 - **FR-015**: Target records without a corresponding eligible source record MUST remain unchanged; source records MUST NOT be modified and target records MUST NOT be deleted.
 - **FR-016**: A valid run with no eligible source records MUST succeed without changing target data.
-- **FR-017**: If any part of a transfer fails, the application MUST report failure and roll back every target change made by that run.
+- **FR-017**: All inserts and updates in one run MUST be atomic. If any part of the transfer fails, the application MUST print a clear error message, return a non-zero process exit code, and roll back every target change made by that run; no earlier subset may remain committed.
 - **FR-018**: If another process changes a target record that the run must update, after the run first checks that record and before transfer commit, the application MUST detect the conflict, report failure, and roll back all target changes made by the run rather than overwrite the concurrent change. The same rule applies if another process inserts a matching target record after the run determines that none exists and before transfer commit. The application MUST NOT roll back or overwrite the other process's committed change.
 
 ### Key Entities *(include if feature involves data)*
@@ -96,8 +98,8 @@ As the application owner, I want invalid requests and transfer failures to leave
 - **SC-001**: In acceptance tests covering the start and end boundaries and `days=1` and `days=5`, 100% of eligible records and 0% of ineligible records are selected.
 - **SC-002**: In successful transfer tests, 100% of eligible records in the run's source snapshot with unambiguous keys have the specified synchronized values in the target, and 100% of unrelated target records remain unchanged.
 - **SC-003**: Across two consecutive identical runs, the second run creates 0 duplicate records and changes 0 identical records or their last-written timestamps.
-- **SC-004**: In tests of missing, invalid, and out-of-range input, 100% of requests report an error and leave all target data unchanged.
-- **SC-005**: In tests injecting failures before and after target writes, 100% of failed runs leave none of their own target changes behind. In tests with concurrent target changes, the other process's committed changes remain intact.
+- **SC-004**: In tests of missing, invalid, and out-of-range input, 100% of requests print an error, return a non-zero exit code, and leave all target data unchanged.
+- **SC-005**: In tests injecting failures before and after target writes, 100% of failed runs print an error, return a non-zero exit code, and leave none of their own target changes behind. In tests with concurrent target changes, the other process's committed changes remain intact.
 - **SC-006**: In tests of inserts and updates, 100% of changed records have a last-written time corresponding to the actual write, expressed in UTC+08:00 to millisecond precision.
 
 ## Assumptions
