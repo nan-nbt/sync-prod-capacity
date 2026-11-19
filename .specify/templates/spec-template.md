@@ -16,14 +16,17 @@
   you should still have a viable MVP (Minimum Viable Product) that delivers value.
 
   Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
-  CONST-SPEC-1: At least TWO user stories are required, and the first MUST be P1. Each story needs
-  its value, priority, an independent test, and at least one Given/When/Then scenario describing
-  observable behavior. Do not put implementation details (paths, dependencies, config) in the spec.
-  Think of each story as a standalone slice of functionality that can be:
-  - Developed independently
-  - Tested independently
-  - Deployed independently
-  - Demonstrated to users independently
+   CONST-SCOPE-1, CONST-REQ-1: Keep requirements separate from technology choices and exclude
+   unrelated product capabilities. At least TWO user stories are required, and the first MUST be
+   P1. Each story needs its value, priority, an independent test, and at least one Given/When/Then
+  scenario describing observable behavior. Do not put implementation details (paths, dependencies,
+  config) in the spec. Apply an existing project reference only if relevant to approved requirements
+  and the selected technology; do not add product features merely because a reference describes them.
+  Keep the story set limited to independently valuable parts of approved scope. One story is
+  acceptable when it fully covers a small application; do not add stories to satisfy a count.
+  For this data-transfer application, capture the required input for the amount of previous-day
+  data and the same-database source-to-target outcome. State the observable meaning of amount and
+  previous day, or mark behavior-changing ambiguity for owner review.
 -->
 
 ### User Story 1 - [Brief Title] (Priority: P1)
@@ -41,35 +44,8 @@
 
 ---
 
-### User Story 2 - [Brief Title] (Priority: P2)
-
-[Describe this user journey in plain language]
-
-**Why this priority**: [Explain the value and why it has this priority level]
-
-**Independent Test**: [Describe how this can be tested independently]
-
-**Acceptance Scenarios**:
-
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
-
----
-
-### User Story 3 - [Brief Title] (Priority: P3)
-
-[Describe this user journey in plain language]
-
-**Why this priority**: [Explain the value and why it has this priority level]
-
-**Independent Test**: [Describe how this can be tested independently]
-
-**Acceptance Scenarios**:
-
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
-
----
-
-[Add more user stories as needed, each with an assigned priority]
+<!-- Add another User Story section only when it represents an independently valuable, approved
+     part of the product scope. Do not add a story merely to satisfy a minimum count. -->
 
 ### Edge Cases
 
@@ -126,7 +102,7 @@
   ACTION REQUIRED: The content in this section represents placeholders.
   Fill them out with the right assumptions based on reasonable defaults
   chosen when the feature description did not specify certain details.
-  CONST-SPEC-2: A default is allowed only if recorded here. A gap that changes scope, security,
+  CONST-REQ-1: A default is allowed only if recorded here. A gap that changes scope, security,
   or user-visible behavior MUST be marked [NEEDS CLARIFICATION] instead.
 -->
 
@@ -138,9 +114,9 @@
 ## Change Request *(include only when amending an existing spec)*
 
 <!--
-  CONST-SPEC-3: An existing spec under docs/ or specs/ is the sole baseline. Reference it by
-  file path + section/ID; never re-create it. List every proposed change here instead of
-  overwriting the original requirement.
+  CONST-REQ-1: An existing spec is the requirements baseline. Reference it by file path +
+  section/ID; never re-create it. List every proposed change here instead of overwriting the
+  original requirement.
 -->
 
 **Baseline**: [path to existing spec + section/ID]

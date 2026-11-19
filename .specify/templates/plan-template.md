@@ -13,25 +13,23 @@
 ## Existing Design Confirmation
 
 <!--
-  ACTION REQUIRED (CONST-PLAN-1, CONST-STACK-1): Complete this table BEFORE any technical design.
-  - List every authoritative document under docs/ relevant to this feature (file path + section or ID).
-  - List EVERY item of docs/tech-stack.md (section + item number, e.g. "Backend #6"), not only relevant ones.
-  - Applicable: expand to dependencies, configuration keys, initialization flow, target file paths, verification.
-  - Not Applicable: give rationale, impact, and alternative.
-  - Conflict or gap with the requirements: move it to "Needs Clarification"; do not design around it.
+  ACTION REQUIRED (CONST-REQ-1, CONST-SIMPLE-1): Complete this table BEFORE finalizing technical
+  design. List relevant authoritative docs and record technology/design proposals separately from
+  requirements. Explain applicability and rationale, and surface behavior-changing requirement gaps
+  for owner review instead of silently deciding them.
 -->
 
-| Source (path + section/item) | Status | Implementation Detail / Rationale | Verification |
-|------------------------------|--------|-----------------------------------|--------------|
-| `docs/tech-stack.md` Backend #1 | Applicable | [deps, config keys, init flow, file paths] | [how verified] |
-| `docs/tech-stack.md` Backend #8 | Not Applicable | [rationale, impact, alternative] | N/A |
+| Source (path + section/item) | Applicability | Proposal / rationale | Owner decision / verification |
+|------------------------------|---------------|----------------------|------------------------------|
+| [Relevant reference, or approved option] | [Applicable / Not applicable + reason] | [Proposed technical choice, distinct from requirement] | [Pending / Approved / Rejected; evidence] |
 
 ## Technical Context
 
 <!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
+  Record technical proposals separately from requirements. Mark unknowns and present material
+  design choices for owner review; do not expand product scope to justify technology choices.
+  Treat existing ETL-platform reference material as applicable only when relevant to the selected
+  technology and app needs; do not add unrelated runtime, infrastructure, or multi-module features.
 -->
 
 **Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]
@@ -54,26 +52,21 @@
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design and before implementation.*
 
-- [ ] **CONST-SPEC-2**: Every unresolved `[NEEDS CLARIFICATION]` from the spec is carried into `Needs Clarification`
-- [ ] **CONST-SPEC-3**: Existing specs/designs are referenced by path + section, not re-created; amendments use a `Change Request`
-- [ ] **CONST-PLAN-1**: `Existing Design Confirmation` covers every relevant doc and every `docs/tech-stack.md` item
-- [ ] **CONST-PLAN-2**: Every new operational, dependency, or configuration fact is in `Authoritative Source Writeback List`
-- [ ] **CONST-PLAN-3**: If `plan.md`/`tasks.md` already existed, changes are localized patches with reason and scope
-- [ ] **CONST-STACK-1**: Security, identity, health-probe, API-doc, and secret components are introduced only when the runtime form requires them
-- [ ] **CONST-CONTRACT-1**: External contracts are recorded in `contracts/`; every own API operation is mapped in `Contract Coverage`
-- [ ] **CONST-TEST-1**: Test strategy covers success, failure, boundary, and configuration loading; tests are written first
-- [ ] **CONST-QUALITY-1**: Environment-dependent values are externalized; batched writes declare batch size and partial-failure behavior
-- [ ] **CONST-MODULE-1**: Shared-module placement is justified by at least two consuming modules; entry points only bootstrap
-- [ ] **CONST-DOC-1 / CONST-DEV-1**: Design follows `docs/rules/` and `docs/tech-stack.md`
-- [ ] **CONST-LANG-1**: Document is in English and keeps this template's section hierarchy
+- [ ] **CONST-SCOPE-1**: The plan contains no product capability outside the agreed transfer scope.
+- [ ] **CONST-REQ-1**: Requirements are separated from technology decisions; unresolved behavior is surfaced for review.
+- [ ] **CONST-TRANSFER-1**: A required input controls the requested quantity of previous-day source data, and source/target are in the same database.
+- [ ] **CONST-SIMPLE-1**: The design uses the smallest readable approach that meets requirements.
+- [ ] **CONST-REVIEW-1**: Material design/technology decisions are presented to the owner, with approval or rejection and rationale recorded before implementation; resulting behavior has verification coverage.
 
 ## Implementation Details
 
 <!--
-  ACTION REQUIRED (CONST-PLAN-1): Fill each item where applicable; write "N/A - [reason]" otherwise.
-  Every key decision MUST cite its source (doc path + section) and rationale.
+  ACTION REQUIRED (CONST-REQ-1, CONST-SIMPLE-1, CONST-REVIEW-1): Fill applicable items with
+  proposals; write "N/A - [reason]" otherwise. Record each material decision's owner disposition
+  (Pending / Approved / Rejected) and rationale. Implementation MUST NOT begin while a material
+  decision is Pending.
 -->
 
 - **File paths**: [new/changed files and classes]
@@ -87,12 +80,15 @@
 - **Deployment**: [runtime form, probes, packaging]
 - **Rollback**: [how to revert safely]
 
+**Owner Review Gate**: [List material decisions and their owner disposition. All must be approved or
+rejected with rationale before implementation begins.]
+
 ## Contract Coverage
 
 <!--
-  CONST-CONTRACT-1: Include only when the feature has contracts/. Map every API operation (path + method)
-  to a User Story or requirement. An unmapped operation is a blocker and MUST go to "Needs Clarification".
-  External-system contracts consumed by this feature MUST also be listed here with their contracts/ file.
+  Include only when the feature defines or consumes a contract. Map each in-scope operation to a User
+  Story or requirement; surface any unmapped operation for review. Keep contract details out of
+  requirement statements unless they describe observable behavior.
 -->
 
 | Contract (file + operation) | User Story / Requirement |
@@ -163,8 +159,8 @@ directories captured above]
 ## Needs Clarification
 
 <!--
-  CONST-SPEC-2, CONST-PLAN-1, CONST-TASK-2: Unresolved spec markers, conflicts or gaps against
-  authoritative docs, unavailable contracts, and items no task can cover. Do not fill these by assumption.
+  CONST-REQ-1: Record unresolved requirement gaps and disagreements between requested behavior and
+  approved design. Do not silently resolve behavior-changing questions as technical choices.
 -->
 
 | ID | Question / Conflict | Source | Blocking? |
@@ -174,8 +170,8 @@ directories captured above]
 ## Authoritative Source Writeback List
 
 <!--
-  CONST-PLAN-2: Every operational, dependency, or configuration fact introduced by this plan.
-  Each entry MUST be written back to docs/ before merge.
+  Record implementation decisions that belong in the project's authoritative reference documents,
+  so accepted operational and technology guidance remains available for future work.
 -->
 
 | Target Document (docs/...) | Change Summary | Status |
