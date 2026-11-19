@@ -6,7 +6,7 @@
 
 **Status**: Draft
 
-**Input**: Manually synchronize production-capacity records for a requested number of calendar days, including today, while preserving data and rolling back failed transfers.
+**Input**: Manually synchronize production-capacity records for a requested number of calendar days, including today, while preserving data, serializing target writes, and rolling back known failed transfers.
 
 ## Clarifications
 
@@ -18,6 +18,11 @@
 - Q: When does the target conflict-detection period begin? → A: When the run first checks the target record or determines that no matching target record exists; it ends at transfer commit.
 - Q: How should the application signal invalid input or a failed transfer? → A: Print a clear error message and return a non-zero process exit code.
 - Q: How should target changes be applied when a run has multiple eligible records? → A: Apply all inserts and updates atomically; any failure rolls back the entire run.
+
+### Subsequent owner decision
+
+- The earlier detect-and-fail answers about concurrent target changes are superseded: target writers wait while the transfer has exclusive write access; the transfer waits for existing target writers before taking its source snapshot. This applies to unrelated target records too.
+- If the final commit outcome cannot be determined, report an unknown outcome with a non-zero exit code rather than assert a rollback. The owner must inspect the target before retrying. Known failures before commit still roll back all transfer writes.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -41,7 +46,7 @@ As the application owner, I want to manually run a transfer for a specified numb
 
 ### User Story 2 - Reject invalid or failed transfers safely (Priority: P2)
 
-As the application owner, I want invalid requests and transfer failures to leave target data unchanged so that I can trust and safely repeat a manual run.
+As the application owner, I want invalid requests and known failed transfers to leave target data unchanged, and uncertain outcomes to be reported honestly, so that I can inspect the data before a safe repeat.
 
 **Why this priority**: Protecting existing data is essential when a request or transfer cannot complete.
 
@@ -52,7 +57,9 @@ As the application owner, I want invalid requests and transfer failures to leave
 1. **Given** `days` is absent, zero, negative, fractional, nonnumeric, or outside the representable date range, **When** the owner launches the application, **Then** it prints an error, returns a non-zero exit code, and does not change any target data.
 2. **Given** at least one target write has occurred during a transfer, **When** a later selection or write fails, **Then** the run prints an error, returns a non-zero exit code, and none of that run's target changes remain.
 3. **Given** a successful run, **When** the owner repeats it with the same window and unchanged source data, **Then** no duplicate target records are created and unchanged target timestamps remain unchanged.
-4. **Given** another process changes a target record that the run must insert or update, **When** the concurrent change conflicts with the transfer, **Then** the run reports failure, rolls back its own target changes, and does not overwrite the other process's change.
+4. **Given** another process is writing to the target when the transfer starts, **When** the transfer requests exclusive write access, **Then** it waits for that writer to finish before taking its source snapshot and checking target records.
+5. **Given** the transfer has exclusive write access to the target, **When** another process attempts to write any target record, including an unrelated record or a new null-shift key, **Then** that writer waits until the transfer commits or rolls back; the transfer does not fail merely because the writer waits.
+6. **Given** the commit acknowledgement is lost and the transfer cannot determine whether it committed, **When** the job reports its outcome, **Then** it reports an unknown outcome and returns a non-zero exit code without claiming rollback; the owner inspects the target before retrying.
 
 ### Edge Cases
 
@@ -83,13 +90,13 @@ As the application owner, I want invalid requests and transfer failures to leave
 - **FR-014**: Repeating a successful run with unchanged source data and the same window MUST NOT create duplicates or change identical records.
 - **FR-015**: Target records without a corresponding eligible source record MUST remain unchanged; source records MUST NOT be modified and target records MUST NOT be deleted.
 - **FR-016**: A valid run with no eligible source records MUST succeed without changing target data.
-- **FR-017**: All inserts and updates in one run MUST be atomic. If any part of the transfer fails, the application MUST print a clear error message, return a non-zero process exit code, and roll back every target change made by that run; no earlier subset may remain committed.
-- **FR-018**: If another process changes a target record that the run must update, after the run first checks that record and before transfer commit, the application MUST detect the conflict, report failure, and roll back all target changes made by the run rather than overwrite the concurrent change. The same rule applies if another process inserts a matching target record after the run determines that none exists and before transfer commit. The application MUST NOT roll back or overwrite the other process's committed change.
+- **FR-017**: All inserts and updates in one run MUST be atomic; no earlier subset may remain committed. For a known failure before commit, the application MUST print a clear error, return a non-zero process exit code, and roll back all target changes made by the run. For a commit known to have been rejected, it MUST report failure and return a non-zero exit code without claiming that the run committed. If the final commit outcome cannot be determined, the application MUST report the outcome as unknown, return a non-zero process exit code, and MUST NOT claim that the run rolled back. The owner MUST inspect the target state before retrying.
+- **FR-018**: Before taking the source snapshot or checking target records, the transfer MUST wait for existing target writers to finish and obtain exclusive write access to the target. While the transfer holds that access, other processes attempting to write any target record, including unrelated records and previously absent keys, MUST wait until the transfer commits or rolls back. An attempted concurrent write MUST NOT by itself make the transfer fail. The transfer MUST NOT undo another process's committed changes.
 
 ### Key Entities *(include if feature involves data)*
 
 - **Production capacity record**: Source or target values consisting of ID, plant, line, record date, shift, quantities, defect rate, status, remarks, creation time, and last-updated or last-written time. The plant, line, date, and shift identify a match; the ID is a synchronized value, not the matching key.
-- **Transfer run**: A manual request with a validated day count, one fixed UTC+08:00 date window, and a success or failure outcome.
+- **Transfer run**: A manual request with a validated day count, one fixed UTC+08:00 date window, and a success, known failure, or unknown commit outcome.
 
 ## Success Criteria *(mandatory)*
 
@@ -99,7 +106,7 @@ As the application owner, I want invalid requests and transfer failures to leave
 - **SC-002**: In successful transfer tests, 100% of eligible records in the run's source snapshot with unambiguous keys have the specified synchronized values in the target, and 100% of unrelated target records remain unchanged.
 - **SC-003**: Across two consecutive identical runs, the second run creates 0 duplicate records and changes 0 identical records or their last-written timestamps.
 - **SC-004**: In tests of missing, invalid, and out-of-range input, 100% of requests print an error, return a non-zero exit code, and leave all target data unchanged.
-- **SC-005**: In tests injecting failures before and after target writes, 100% of failed runs print an error, return a non-zero exit code, and leave none of their own target changes behind. In tests with concurrent target changes, the other process's committed changes remain intact.
+- **SC-005**: In tests injecting known failures before commit, both before and after target writes, 100% of runs print an error, return a non-zero exit code, and leave none of their own target changes behind. In coordinated concurrent-writer tests, writers already active finish before the transfer proceeds and writers attempting target changes during the transfer wait until it ends. In tests simulating an unknown commit outcome, the run reports uncertainty and a non-zero exit code without asserting rollback.
 - **SC-006**: In tests of inserts and updates, 100% of changed records have a last-written time corresponding to the actual write, expressed in UTC+08:00 to millisecond precision.
 
 ## Assumptions

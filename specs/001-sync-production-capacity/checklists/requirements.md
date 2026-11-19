@@ -31,6 +31,6 @@
 
 ## Notes
 
-- Validation of the specification found no missing requirement details; the success outcomes cannot be demonstrated until implementation and acceptance testing.
+- The owner authorized replacing target conflict detection with serialized target writes and distinguishing unknown commit outcomes. The updated success outcomes cannot be demonstrated until implementation and acceptance testing.
 - Governance conflict resolved by constitution version 3.0.0: `CONST-TRANSFER-1` permits the time period specified in FR-002 and FR-005.
 - Items marked incomplete require spec updates or verification before `/speckit.clarify` or `/speckit.plan`.
