@@ -3,12 +3,15 @@
 
 # Production
 /build
+/.gradle
 
 # Generated files
 .docusaurus
 .cache-loader
 
 # Misc
+.env
+*.env
 .DS_Store
 .env.local
 .env.development.local

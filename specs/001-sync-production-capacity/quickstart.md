@@ -1,24 +1,27 @@
 # Quickstart and Validation Guide
 
-**Planning only:** The application and Gradle build do not yet exist. Commands below are proposed for use after implementation, not commands validated in this repository.
+**Status:** The local Gradle application and manual CLI are implemented. Unit/build verification and a non-mutating PostgreSQL connectivity/schema check have run. Full transfer acceptance, concurrency, rollback and commit-outcome scenarios remain unverified; do not consider deployment approved until those checks pass.
 
 ## Prerequisites
 
 - Java 21, Gradle 8.x and access to an isolated PostgreSQL 15.x test database containing both documented tables. Never run destructive fixture setup against shared or production data.
-- Use the existing [`docs/application.yml`](../../docs/application.yml) as the connection reference; its `postgresql.datasource.*` keys require explicit runtime loading and mapping into Spring's `DataSource`. Supply `POSTGRES_PASSWORD` securely without recording its value in the repository or logs. The owner reports that an isolated PostgreSQL 15 test database is available; ensure its connection configuration is separate from any shared or production database. Verify actual schema, permissions, writer paths and locking behavior before implementation.
+- The application reads the root `.env` file. Provide non-empty `POSTGRES_URL`, `POSTGRES_USERNAME`, `POSTGRES_PASSWORD`, and `POSTGRES_DRIVER_CLASS_NAME` entries there. The file is Git-ignored; do not paste secrets into source control, logs, or chat. Ensure the URL points to the authorized test database, never production/shared data. The application maps these to the custom datasource properties at startup.
+- The first manual run executes INSERT/UPDATE operations in the target table. Use only a database authorized for test writes, and inspect the eligible source set and target before running. A test-password alone does not ensure the database is safe for test writes.
 - Follow the amended safety requirements in [spec.md](spec.md) and verify the operational prerequisites in [plan.md](plan.md) before deployment.
 
 ## Build and run
 
-From the project root, once the proposed Gradle wrapper and application exist:
+From the project root:
 
 ```sh
 ./gradlew test
 ./gradlew bootJar
-java -jar build/libs/<application-jar>.jar --days=5
+./gradlew bootRun --args='--days=5'
+# Or run the packaged application:
+java -jar build/libs/sync-production-capacity-0.1.0.jar --days=5
 ```
 
-Replace the placeholder with the produced executable JAR. A successful run exits 0; see [CLI contract](contracts/cli.md). Failed runs exit nonzero and must not retain partial changes, subject to the documented commit-outcome ambiguity.
+The executable JAR name is fixed by the Gradle project version. A successful run exits 0; see [CLI contract](contracts/cli.md). Failed runs exit nonzero. A generic failure does not confirm rollback; inspect target state before retrying if the commit result is uncertain. `./gradlew test` includes the non-mutating connectivity/schema smoke test when the ignored root `.env` contains valid test settings; tests never create or reset database tables.
 
 ## Minimal validation scenarios
 
