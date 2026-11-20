@@ -5,11 +5,12 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -27,27 +28,23 @@ public class CapacityTransfer {
             result.getObject("record_date", java.time.LocalDate.class), result.getString("shift_type"),
             result.getInt("target_qty"), result.getInt("actual_qty"), result.getBigDecimal("defect_rate"),
             result.getString("line_status"), result.getString("remarks"),
-            result.getTimestamp("created_at").toInstant());
+            result.getObject("created_at", OffsetDateTime.class).toInstant());
 
     private final JdbcTemplate jdbc;
 
-    public CapacityTransfer(JdbcTemplate jdbc) {
-        this.jdbc = jdbc;
-    }
+    public CapacityTransfer(JdbcTemplate jdbc) { this.jdbc = jdbc; }
 
     @Transactional(isolation = org.springframework.transaction.annotation.Isolation.REPEATABLE_READ)
     public int transfer(DaysWindow window) {
         jdbc.execute(LOCK_TARGET);
         List<CapacityRecord> rows = jdbc.query(SELECT_SOURCE, RECORD_MAPPER,
-                java.time.OffsetDateTime.ofInstant(window.startInclusive(), java.time.ZoneOffset.UTC),
-                java.time.OffsetDateTime.ofInstant(window.endExclusive(), java.time.ZoneOffset.UTC));
+                OffsetDateTime.ofInstant(window.startInclusive(), ZoneOffset.UTC),
+                OffsetDateTime.ofInstant(window.endExclusive(), ZoneOffset.UTC));
         rejectDuplicateSourceKeys(rows);
         int changed = 0;
         for (CapacityRecord source : rows) {
             List<CapacityRecord> targets = findTargets(source);
-            if (targets.size() > 1) {
-                throw new IllegalStateException("Multiple target rows match an eligible source key.");
-            }
+            if (targets.size() > 1) throw new IllegalStateException("Multiple target rows match an eligible source key.");
             if (targets.isEmpty()) {
                 insert(source);
                 changed++;
@@ -99,7 +96,7 @@ public class CapacityTransfer {
                  defect_rate, line_status, remarks, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, date_trunc('milliseconds', clock_timestamp()))
                 """, row.id(), row.plantCode(), row.lineCode(), row.recordDate(), row.shiftType(), row.targetQty(),
-                row.actualQty(), row.defectRate(), row.lineStatus(), row.remarks(), Timestamp.from(row.createdAt()));
+                row.actualQty(), row.defectRate(), row.lineStatus(), row.remarks(), OffsetDateTime.ofInstant(row.createdAt(), ZoneOffset.UTC));
     }
 
     private void update(CapacityRecord row) {
@@ -110,11 +107,10 @@ public class CapacityTransfer {
                 WHERE plant_code = ? AND line_code = ? AND record_date = ?
                   AND shift_type IS NOT DISTINCT FROM ?
                 """, row.id(), row.targetQty(), row.actualQty(), row.defectRate(), row.lineStatus(), row.remarks(),
-                Timestamp.from(row.createdAt()), row.plantCode(), row.lineCode(), row.recordDate(), row.shiftType());
+                OffsetDateTime.ofInstant(row.createdAt(), ZoneOffset.UTC), row.plantCode(), row.lineCode(), row.recordDate(), row.shiftType());
     }
 
     private record BusinessKey(String plantCode, String lineCode, java.time.LocalDate recordDate, String shiftType) { }
-
     private record CapacityRecord(long id, String plantCode, String lineCode, java.time.LocalDate recordDate,
                                   String shiftType, int targetQty, int actualQty, java.math.BigDecimal defectRate,
                                   String lineStatus, String remarks, Instant createdAt) { }

@@ -4,9 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.DriverManager;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EnvFileConfigurationTest {
@@ -30,23 +27,4 @@ class EnvFileConfigurationTest {
         }
     }
 
-    @Test
-    void readsConfiguredConnectionWithoutModifyingDatabase() throws Exception {
-        EnvFileConfiguration.Settings settings = EnvFileConfiguration.read(Path.of(".env"));
-        var values = settings.datasourceProperties();
-        Class.forName(values.get("postgresql.datasource.driver-class-name"));
-        try (Connection connection = DriverManager.getConnection(
-                values.get("postgresql.datasource.url"), values.get("postgresql.datasource.username"),
-                values.get("postgresql.datasource.password"))) {
-            assertEquals(true, connection.isValid(5));
-            try (var statement = connection.createStatement();
-                 var result = statement.executeQuery("""
-                         SELECT to_regclass('devuser.production_capacity') IS NOT NULL
-                            AND to_regclass('devuser.production_capacity_anan') IS NOT NULL
-                         """)) {
-                result.next();
-                assertEquals(true, result.getBoolean(1));
-            }
-        }
-    }
 }

@@ -31,20 +31,21 @@ public class CapacityApplication {
             System.err.println("Application startup failed; verify the required database settings in the root .env file.");
             return 1;
         }
-        SpringApplication application = new SpringApplicationBuilder(CapacityApplication.class)
-                .web(WebApplicationType.NONE)
-                .properties(settings.datasourceProperties().entrySet().stream()
-                        .map(entry -> entry.getKey() + "=" + entry.getValue()).toArray(String[]::new))
-                .build();
         ConfigurableApplicationContext context;
         try {
+            SpringApplication application = new SpringApplicationBuilder(CapacityApplication.class)
+                    .web(WebApplicationType.NONE)
+                    .initializers(applicationContext -> applicationContext.getBeanFactory()
+                            .registerSingleton("envFileSettings", settings))
+                    .build();
             context = application.run(args);
         } catch (Exception exception) {
             System.err.println("Application startup failed; verify external database configuration.");
             return 1;
         }
+        final int transferred;
         try {
-            context.getBean(CapacityTransfer.class).transfer(window);
+            transferred = context.getBean(CapacityTransfer.class).transfer(window);
         } catch (org.springframework.transaction.TransactionSystemException exception) {
             closeContext(context);
             System.err.println("Transfer outcome unknown; inspect target state before retry.");
@@ -56,11 +57,17 @@ public class CapacityApplication {
         }
         try {
             context.close();
+            System.out.println(successMessage(transferred));
             return 0;
         } catch (Exception exception) {
             System.err.println("Transfer committed, but application shutdown failed.");
             return 1;
         }
+    }
+
+    static String successMessage(int transferred) {
+        String noun = transferred == 1 ? "row" : "rows";
+        return "Transfer completed successfully. Total " + noun + " successfully transferred: " + transferred + ".";
     }
 
     private static void closeContext(ConfigurableApplicationContext context) {

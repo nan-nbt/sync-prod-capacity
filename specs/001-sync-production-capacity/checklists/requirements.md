@@ -26,11 +26,10 @@
 
 - [x] All functional requirements have clear acceptance criteria
 - [x] User scenarios cover primary flows
-- [ ] Feature meets measurable outcomes defined in Success Criteria (not verified: PostgreSQL acceptance tests and manual scenarios remain incomplete)
 - [x] No implementation details leak into specification
 
 ## Notes
 
-- The owner authorized replacing target conflict detection with serialized target writes and distinguishing unknown commit outcomes. The updated success outcomes cannot be demonstrated until implementation and acceptance testing.
+- Training-scope decision: the core source-to-target lab transfer remains the purpose of the utility. Advanced target serialization and unknown commit outcome guarantees are deferred and recorded in the specification's Deviation Log.
 - Governance conflict resolved by constitution version 3.0.0: `CONST-TRANSFER-1` permits the time period specified in FR-002 and FR-005.
-- Items marked incomplete require spec updates or verification before `/speckit.clarify` or `/speckit.plan`.
+- The measurable-outcomes checklist item was removed because live lab transfer verification is a manual examiner activity, not an automated project gate.

@@ -1,31 +1,32 @@
 package com.example.capacity;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.context.properties.bind.Bindable;
-import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
+import org.junit.jupiter.api.io.TempDir;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class DataSourceConfigurationTest {
+    @TempDir
+    Path directory;
+
     @Test
-    void bindsCustomPostgresqlDatasourcePropertiesWithoutPrintingPassword() {
-        var source = new MapConfigurationPropertySource(Map.of(
-                "postgresql.datasource.url", "jdbc:postgresql://localhost:5432/testdb",
-                "postgresql.datasource.username", "test_user",
-                "postgresql.datasource.password", "secret-marker",
-                "postgresql.datasource.driver-class-name", "org.postgresql.Driver"));
+    void mapsEnvSettingsToDatasourceWithoutResolvingOrPrintingPassword() throws Exception {
+        Path env = directory.resolve(".env");
+        Files.writeString(env, "POSTGRES_URL=jdbc:postgresql://localhost:5432/testdb\n"
+                + "POSTGRES_USERNAME=test_user\nPOSTGRES_PASSWORD=${synthetic-password}\n"
+                + "POSTGRES_DRIVER_CLASS_NAME=org.postgresql.Driver\n");
+        var settings = EnvFileConfiguration.read(env);
 
-        var properties = new Binder(source).bind("postgresql.datasource",
-                Bindable.of(DataSourceConfiguration.PostgresqlDataSourceProperties.class)).get();
+        var dataSource = (DriverManagerDataSource) new DataSourceConfiguration().dataSource(settings);
 
-        assertEquals("jdbc:postgresql://localhost:5432/testdb", properties.getUrl());
-        assertEquals("test_user", properties.getUsername());
-        assertEquals("secret-marker", properties.getPassword());
-        assertEquals("org.postgresql.Driver", properties.getDriverClassName());
-        assertFalse(properties.toString().contains("secret-marker"));
+        assertEquals("jdbc:postgresql://localhost:5432/testdb", dataSource.getUrl());
+        assertEquals("test_user", dataSource.getUsername());
+        assertEquals("${synthetic-password}", dataSource.getPassword());
+        assertFalse(settings.toString().contains("synthetic-password"));
     }
 }

@@ -15,7 +15,7 @@
 
 * Use constructor injection for DI; `@Autowired` is prohibited
 * Parameters that require external adjustment (timeout, retry count, batch size, schedule, file path, etc.) MUST be supplied via configuration files; hardcoding is prohibited
-* When different beans must be injected depending on the runtime context (e.g., a job runner under `@Profile("prod")` or `@Profile("qas")`), use Spring Profiles and configuration parameters to control this; avoid hardcoded `if/else` logic in code
+* When different beans must be injected depending on the runtime context (e.g., a job runner under `@Profile("prod")` or an environment-specific profile), use Spring Profiles and configuration parameters to control this; avoid hardcoded `if/else` logic in code
 * Prefer a well-known library when one can simplify the problem; do not reinvent the wheel
 * Use immutable `record`s appropriately for DTOs and job input/output models
 * When data enters through a typed boundary, use Bean Validation annotations (`@Size`, `@Email`, etc.) instead of manual validation
@@ -154,7 +154,7 @@ root project
 
 ### Default Profile
 
-`application.yaml` should not globally force a single profile; use environment-driven profiles such as `dev`, `qas`, `prod` depending on the job module and deployment target.
+`application.yaml` should not globally force a single profile; use environment-driven profiles such as `dev`, `test`, or `prod` depending on the job module and deployment target.
 
 ### JWT Authentication and IAM Integration
 

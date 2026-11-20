@@ -2,118 +2,93 @@
 
 **Input**: `spec.md`, `plan.md`, `research.md`, `data-model.md`, `contracts/cli.md`, `quickstart.md`, and `.specify/memory/constitution.md`.
 
-**Review gate**: The owner approved the remaining material stack and design choices and confirmed that the existing PostgreSQL test environment is suitable for implementation testing. This does not approve deployment to production. Keep database checks proportionate to implementation; no separate isolated PostgreSQL instance or elaborate environment audit is required.
+**Project scope**: This is a training and examination project for manually transferring records on the configured lab/test database; it is not intended for production deployment. Keep work focused on the basic CLI, requested time window, SELECT-only source access, target insert/update/no-op behavior, local unit tests, and straightforward failures. Automated tests must not connect to the lab database. Do not claim verification that has not been performed.
 
-**Test-first rule**: For each behavior test below, first create only the minimal compiling interfaces or inert stubs needed to run it; run it and record an assertion failure caused by the missing behavior before implementing that behavior. A compilation, connection or fixture-setup failure is not a red test. Tests may provision or reset the two documented tables in the PostgreSQL test environment. Do not log credentials or record values.
+**Test-first rule**: Write focused local unit tests for behavior before implementing it. No automated lab database fixtures, integration tests, connectivity checks, or connections are in scope. Do not log credentials or record values.
 
 **Format**: `[P]` denotes tasks that can run concurrently after their stated prerequisites, on different files. Story labels identify the owning story. Each task includes a done condition and verification.
 
 ## Phase 1: Setup
 
-**Execution note**: The user confirmed the database is safe for testing and supplied root `.env` connection settings. A non-mutating connection/schema smoke check was run; no table reset, fixture provisioning, or data-modifying manual transfer was performed. Transfer, rollback, snapshot, locking, and commit-outcome acceptance remain unverified. `.env` is local and Git-ignored.
-
-- [x] T001 Owner approval of the remaining material stack and design choices received; retain existing owner decisions and unresolved deployment caveats — DoD: approval is recorded here; it is not an implementation blocker — Verify: owner confirmation received.
-- [x] T002 Create `settings.gradle`, `build.gradle` and the Gradle 8.x wrapper for Java 21, Spring Boot 3.5.x non-web, Spring JDBC, PostgreSQL, Log4j2 and JUnit 5; exclude default logging and avoid web, ORM and Spring Batch — DoD: a single project builds with focused tests enabled — Verify: `./gradlew test` runs with no application transfer.
-- [x] T003 Confirm the available PostgreSQL test environment is reachable (non-destructive connection and schema smoke verified) and compatible with the documented tables; no separate isolated instance or broad deployment-environment audit is required for implementation — DoD: database integration tests can run against the test environment, with no schema migration — Verify: connect using externally supplied test settings and run a non-destructive connectivity/schema smoke test.
+- [x] T001 Confirm the remaining material stack and design choices — DoD: decisions relevant to the training/examination scope are recorded — Verify: owner confirmed training/lab transfer purpose, no production deployment, no automated DB tests, and requested a success count in console output.
+- [x] T002 Create `settings.gradle`, `build.gradle` and the Gradle 8.x wrapper for Java 21, Spring Boot 3.5.x non-web, Spring JDBC, PostgreSQL, Log4j2 and JUnit 5; exclude default logging and avoid web, ORM and Spring Batch — DoD: a single project builds with focused local tests enabled — Verify: `./gradlew test` runs with no application transfer.
 
 ## Phase 2: Foundational
 
-**Purpose**: Shared runtime and test-environment prerequisites. Complete T002–T006 before database-backed application verification; application implementation may begin under the owner's design approval.
+**Purpose**: Establish runtime configuration and local testing prerequisites. Lab database connection and transfer verification are reserved for manually controlled examiner use.
 
-- [ ] T004 Create a PostgreSQL test fixture (deferred: user prohibited table resets) in `src/test/java/com/example/capacity/PostgresFixture.java` using externally supplied test connection settings; provision or reset only the two documented tables in the PostgreSQL test environment — DoD: tests can arrange and inspect deterministic source/target data — Verify: run a fixture smoke test against the test environment.
-- [x] T005 Write configuration tests in `src/test/java/com/example/capacity/DataSourceConfigurationTest.java` for explicit `postgresql.datasource.url`, `username`, `password` and `driver-class-name` mapping, external file loading and no secret output — DoD: focused assertions exist — Verify: observe an assertion failure with compiling inert configuration before T006.
-- [x] T006 Implement non-web startup and explicit external configuration loading/binding; application reads root `.env` and binds all four `POSTGRES_*` settings — DoD: custom datasource values passed to Spring without logging them — Verify: `EnvFileConfigurationTest` in `src/main/java/com/example/capacity/CapacityApplication.java`, `src/main/java/com/example/capacity/DataSourceConfiguration.java` and `src/main/resources/application.yml`; preserve `${POSTGRES_PASSWORD}`, provide no production default and never run a transfer implicitly — DoD: the documented custom prefix reaches the JDBC `DataSource` without leaking credentials — Verify: T005 passes and startup does not transfer data without valid explicit input.
+- [x] T005 Write configuration tests in `src/test/java/com/example/capacity/DataSourceConfigurationTest.java` for explicit `postgresql.datasource.url`, `username`, `password` and `driver-class-name` mapping, external file loading and no secret output — DoD: focused assertions exist — Verify: local configuration tests passed without requesting a lab database connection.
+- [x] T006 Implement non-web startup and explicit external configuration loading/binding; application reads root `.env` and binds all four `POSTGRES_*` settings — DoD: custom datasource values passed to Spring without logging them; no production default; transfer occurs only after valid explicit CLI input — Verify: configuration unit tests passed; valid CLI input explicitly invokes the configured lab transfer.
 
 ## Phase 3: User Story 1 — Synchronize a requested window (P1)
 
-**Goal**: Manually transfer the eligible snapshot while preserving unrelated and unchanged data.
+**Goal**: Manually transfer the eligible source records for a requested window while preserving unrelated and unchanged data.
 
-**Independent test**: In the PostgreSQL test environment, use a fixed 2026-11-16 UTC+08:00 clock and `--days=5`; compare source and target at both boundaries, including insert, changed, unchanged, null-shift, unrelated and empty-window cases. Repeat and check timestamps.
+**Independent verification**: Local unit tests cover CLI/window behavior and transfer mapping using non-database test doubles. Automated tests make no lab database connections; `CapacityTransferTest` exercises SQL parameters and write decisions via mocked JdbcTemplate. Lab-specific behavior remains for manual examiner verification.
 
 ### Tests — write before the corresponding implementation
 
-- [ ] T007 [P] [US1] Write CLI and window tests (partial: ordinary boundaries and invalid syntax covered; month/year/leap and full representability boundary tests remain) in `src/test/java/com/example/capacity/DaysWindowTest.java` for exactly one `--days=<digits>`, positive leading-zero values, missing/duplicate/empty/signed/zero/fractional/nonnumeric/overflow and Java/JDBC/PostgreSQL-unrepresentable endpoints; cover days 1 and 5, inclusive start, exclusive end, month/year/leap boundaries and a fixed window across midnight — DoD: validation and fixed UTC+08:00 window assertions are explicit — Verify: observe assertion failures against compiling inert stubs before T011.
-- [ ] T008 [P] [US1] Write transfer integration tests (deferred: require DB fixtures/table reset) in `src/test/java/com/example/capacity/TransferSuccessTest.java` using T004 for selection by `created_at` rather than record date or source `updated_at`; assert every synchronized field from `data-model.md`, inserted ID/creation time, update including ID-only or creation-time-only changes, null and empty values, null-shift matching, unchanged/unrelated rows, source immutability, no deletes and empty-window success — DoD: before/after data and timestamp assertions are present — Verify: observe assertion failures against compiling inert transfer stubs before T012–T015.
-- [ ] T009 [P] [US1] Write idempotence and write-time integration tests (deferred: require DB fixtures/table reset) in `src/test/java/com/example/capacity/TransferTimestampTest.java` using T004; assert repeated identical runs do not create duplicates or change target timestamps, source `updated_at` differences are ignored, and changed rows get actual write-time instants truncated to milliseconds and rendered at UTC+08:00 — DoD: a transaction-start-versus-write-time distinction is tested — Verify: observe assertion failures against compiling inert transfer stubs before T014–T015.
-- [ ] T010 [P] [US1] Write a coordinated snapshot integration test (deferred: requires coordinated PostgreSQL sessions) in `src/test/java/com/example/capacity/TransferSnapshotTest.java` using separate PostgreSQL sessions: change eligible source data after the job establishes its snapshot and verify the transferred values are from that snapshot — DoD: session synchronization proves the ordering rather than relying on sleeps — Verify: observe an assertion failure against compiling inert transaction/transfer stubs before T013–T015.
+- [x] T007 [P] [US1] Write CLI and window unit tests in `src/test/java/com/example/capacity/DaysWindowTest.java` for exactly one `--days=<digits>`, positive leading-zero values, missing/duplicate/empty/signed/zero/fractional/nonnumeric/overflow input; cover days 1 and 5, inclusive start, exclusive end, representative month/year boundaries, and a fixed window — DoD: validation and UTC+08:00 window assertions are explicit — Verify: `DaysWindowTest` passes in the local suite.
+- [x] T008 [P] [US1] Write local transfer unit tests in `src/test/java/com/example/capacity/CapacityTransferTest.java` using non-database test doubles for selection by `created_at`, null-safe mapping, inserted values, updates, duplicate/ambiguous key handling, and unchanged/no-op behavior — DoD: expected mapping and operation assertions are present — Verify: `CapacityTransferTest` passes without lab database connections.
+- [x] T009 [P] [US1] Write local idempotence and write-time unit tests in `src/test/java/com/example/capacity/CapacityTransferTest.java` using non-database test doubles — DoD: repeated identical runs do not duplicate writes and changed rows use millisecond-precision write times — Verify: repeated no-op and update counts, plus millisecond-truncated database-time SQL, are asserted by `CapacityTransferTest`; no lab database connection made.
 
 ### Implementation
 
-- [ ] T011 [US1] Implement argument parsing and one immutable window (partial: unit tests cover ordinary windows/invalid syntax but PostgreSQL lower-bound compatibility requires acceptance verification) in `src/main/java/com/example/capacity/DaysWindow.java`; validate syntax, duplicates, numeric overflow, calendar arithmetic and both PostgreSQL/JDBC-representable bounds before opening a write transaction; take the run date once at fixed UTC+08:00 — DoD: T007 cases pass, including the specified half-open interval — Verify: run `DaysWindowTest`.
-- [ ] T012 [US1] Implement schema-qualified, parameter-bound source selection (partial: application code written; not integration-tested against PostgreSQL) and null-safe key/field mapping in `src/main/java/com/example/capacity/CapacityTransfer.java` using the exact columns in `data-model.md`; identify duplicate eligible source keys and multiple target matches only for eligible keys — DoD: ambiguous keys fail rather than select arbitrarily — Verify: T008 and the duplicate cases in T020 after T020 exists.
-- [ ] T013 [US1] Implement a single Spring-managed PostgreSQL REPEATABLE READ transaction (partial: annotation added; proxy and lock/snapshot ordering unverified) in `src/main/java/com/example/capacity/TransferTransaction.java`; acquire `SHARE ROW EXCLUSIVE` on `devuser.production_capacity_anan` before any snapshot-establishing query, wait under configured lock behavior, hold the lock through commit/rollback, and perform no intermediate commits or retries — DoD: the source snapshot and all target operations share one transaction — Verify: T010 and T021 after the transfer is wired.
-- [ ] T014 [US1] Implement explicit insert and update-if-different operations (partial: application code written; value/timestamp semantics unverified without PostgreSQL integration tests) in `src/main/java/com/example/capacity/CapacityTransfer.java`: preserve ID, creation time and all synchronized values; exclude source `updated_at`; use actual database write time truncated, not rounded, to milliseconds; never write unchanged/unrelated rows, modify source or delete targets — DoD: inserts, updates and no-ops follow `data-model.md` — Verify: T008 and T009 pass after T015.
-- [ ] T015 [US1] Wire the manual CLI in (partial: manual command path implemented; successful packaged invocation against PostgreSQL unverified) `src/main/java/com/example/capacity/CapacityApplication.java` to validate before transaction, invoke the transfer once, close the non-web context, return zero for success including an empty window, and log start/end without secrets or row contents — DoD: no schedule, HTTP endpoint or implicit run exists — Verify: T007–T010 pass and `java -jar build/libs/<application-jar>.jar --days=5` succeeds against test-environment fixtures.
-- [ ] T016 [US1] Perform and record the manual US1 comparison (deferred: requires PostgreSQL fixtures and table resets) in `specs/001-sync-production-capacity/quickstart.md`: use test-environment fixtures for the documented five-day boundaries, new/changed/identical/null-shift/unrelated rows, empty window and a repeat — DoD: expected and observed results are recorded without sensitive data — Verify: compare full source and target values and unchanged timestamps before and after.
+- [x] T011 [US1] Implement argument parsing and an immutable window in `src/main/java/com/example/capacity/DaysWindow.java`; validate syntax, duplicates, numeric overflow and calendar arithmetic using the fixed UTC+08:00 window — DoD: T007 cases pass, including the specified half-open interval — Verify: local `DaysWindowTest` passes.
+- [x] T012 [US1] Implement parameter-bound source selection and null-safe key/field mapping in `src/main/java/com/example/capacity/CapacityTransfer.java` using the exact columns in `data-model.md`; source operations must remain SELECT-only — DoD: eligible records are selected and mapped without source mutation — Verify: `CapacityTransferTest` passes against mock JdbcTemplate; no lab database connection made.
+- [x] T014 [US1] Implement target insert and update-if-different behavior in `src/main/java/com/example/capacity/CapacityTransfer.java`: preserve required IDs, creation time and synchronized values; exclude source `updated_at`; use the specified millisecond-precision write time; do not write unchanged or unrelated targets, modify source, or delete targets — DoD: inserts, updates and no-ops follow `data-model.md` — Verify: `CapacityTransferTest` passes mock insert/update/no-op cases; no lab database connection made.
+- [x] T015 [US1] Wire the manual CLI in `src/main/java/com/example/capacity/CapacityApplication.java` to validate input before startup, invoke the configured lab transfer once, close the non-web context, return zero for success including an empty window, report the number of inserted/updated rows, and avoid exposing secrets or row contents — DoD: no schedule, HTTP endpoint or implicit run exists — Verify: `rtk ./gradlew test --rerun-tasks` passed; no lab database connection was made.
 
-**Checkpoint**: US1 is independently demonstrable in the PostgreSQL test environment; it is not release-ready until US2 safety, review and deployment gates pass.
+**Checkpoint**: Local window/CLI tests and mocked JdbcTemplate transfer tests cover the basic flow. Manual examiner transfer against the lab/test database is separate; no live lab database test or deployment verification is claimed.
 
-## Phase 4: User Story 2 — Reject invalid or failed transfers safely (P2)
+## Phase 4: Straightforward failure handling (P2)
 
-**Goal**: Ensure invalid requests, known failures, concurrent writers and uncertain commits have the specified safe outcomes.
+**Goal**: Reject invalid CLI input and report straightforward validation or transfer failures without falsely claiming success.
 
-**Independent test**: Exercise invalid CLI input, inject a failure after a write and compare the entire target; coordinate competing writers and simulate a lost commit acknowledgement, asserting exit status and truthful messages.
+**Independent verification**: Local tests assert invalid input is rejected and straightforward failures are reported as nonzero outcomes. No lab database failures are injected or simulated.
 
-### Tests — write before the corresponding safety implementation
+- [x] T017 [P] Write local CLI tests in `src/test/java/com/example/capacity/InvalidInvocationTest.java` for missing, repeated, zero, signed, fractional, nonnumeric and overflow `--days`; assert clear errors and nonzero outcomes — DoD: invalid inputs are covered without lab database access — Verify: local suite passes.
+- [x] T022 Complete invalid-input handling in `src/main/java/com/example/capacity/CapacityApplication.java`: report a clear safe error, return nonzero and do not start a transfer for invalid inputs — DoD: invalid requests cannot reach transfer invocation — Verify: local CLI tests pass.
+- [x] T023 Propagate straightforward validation and transfer failures through `src/main/java/com/example/capacity/CapacityTransfer.java` and `src/main/java/com/example/capacity/CapacityApplication.java`; return nonzero and do not claim that a database rollback occurred — DoD: errors are reported without secrets or row contents and are not presented as successful transfers — Verify: generic failure reporting is present; invalid-input process tests pass; no lab DB failure was induced.
 
-- [ ] T017 [P] [US2] Write process-level CLI tests (deferred: no automated process harness implemented) in `src/test/java/com/example/capacity/InvalidInvocationTest.java` for missing, repeated, zero, signed, fractional, nonnumeric, overflow and unrepresentable `--days`; assert clear error, nonzero exit and unchanged entire target — DoD: CLI contract and no-write assertions cover invalid inputs — Verify: observe an assertion failure before T022; use T011 for value validation.
-- [ ] T018 [P] [US2] Write PostgreSQL rollback tests (deferred: require DB fixtures/table reset) in `src/test/java/com/example/capacity/TransferRollbackTest.java` using T004: inject failures before and after at least one write, including ID collision and unstoreable value; assert nonzero error, no partial target changes, unchanged source and no automatic retry — DoD: full target before/after comparisons prove rollback — Verify: observe an assertion failure before T023.
-- [ ] T019 [P] [US2] Write outcome-reporting tests (deferred: transaction/connection failure test seam not implemented) in `src/test/java/com/example/capacity/CommitOutcomeTest.java` for successful commit, known pre-commit failure, known rejected commit and lost commit acknowledgement; assert nonzero unknown outcome without claiming rollback, and an instruction to inspect before retry — DoD: distinguish rejection from uncertainty without exposing credentials or row values — Verify: observe an assertion failure before T024 using controlled transaction/connection failure injection.
-- [ ] T020 [P] [US2] Write ambiguous-match integration tests (deferred: require DB fixtures/table reset) in `src/test/java/com/example/capacity/TransferAmbiguityTest.java` using T004 for duplicate eligible source keys and multiple matching targets, including null shifts; assert failure and complete rollback, while unrelated duplicate keys do not fail the run — DoD: eligible and unrelated duplicates are distinguished — Verify: observe an assertion failure before T023 using a compilable test seam; retain T012's duplicate checks.
-- [ ] T021 [P] [US2] Write coordinated real-PostgreSQL lock tests (deferred: requires PostgreSQL session coordination) in `src/test/java/com/example/capacity/TransferLockTest.java`: an existing writer finishes before snapshot and its committed target value is checked; existing-row, unrelated-row and absent null-shift-key writers wait while the job holds the lock and proceed after commit or rollback — DoD: job succeeds when writers merely wait and never undoes their commits — Verify: use explicit session coordination and PostgreSQL lock observation; observe an assertion failure before T023 against an inert or deliberately unlocked test implementation.
+## Phase 5: Polish
 
-### Implementation
-
-- [ ] T022 [US2] Complete process-level invalid-input handling (partial: CLI validates input, process-exit integration assertions deferred) in `src/main/java/com/example/capacity/CapacityApplication.java`: print a clear safe error, return nonzero and do not start transfer or change target data for every T017 case — DoD: invalid requests cannot reach the write transaction — Verify: T017 passes.
-- [ ] T023 [US2] Complete known-failure and transaction handling (partial: transactional boundary added; rollback/writer behavior unverified without PostgreSQL tests) in `src/main/java/com/example/capacity/TransferTransaction.java` and `src/main/java/com/example/capacity/CapacityTransfer.java`: propagate ambiguity, constraint, selection, lock and write failures; roll back every job write, return nonzero, never retry automatically, and preserve lock-and-wait semantics — DoD: no earlier subset commits and other writers' commits remain intact — Verify: T018, T020 and T021 pass against the PostgreSQL test environment.
-- [ ] T024 [US2] Implement commit-outcome classification and safe console logging (partial: unknown commit is conservatively reported for transaction system exceptions; precise distinction and tests remain incomplete) in `src/main/java/com/example/capacity/CapacityApplication.java` and `src/main/java/com/example/capacity/TransferTransaction.java`: distinguish confirmed rejection and known pre-commit failure from an unconfirmed commit; report unknown with nonzero exit and require inspection before retry, without asserting rollback or compensating — DoD: no secrets or row contents appear in error output — Verify: T019 passes.
-- [ ] T025 [US2] Perform and record manual safety verification (deferred: requires PostgreSQL tests and controlled failure simulation) in `specs/001-sync-production-capacity/quickstart.md` in the PostgreSQL test environment: invalid input, failure after an earlier write, full-target rollback, both lock ordering directions, and unknown-outcome recovery via controlled simulation — DoD: observed statuses, before/after comparisons and inspection-before-retry procedure are recorded without sensitive data — Verify: compare observations to FR-003 and FR-017–018.
-
-**Checkpoint**: US2 builds on the US1 transfer and can be tested independently with the PostgreSQL test fixtures; both stories must pass before release.
-
-## Phase 5: Polish & Cross-Cutting Concerns
-
-- [ ] T026 Update `specs/001-sync-production-capacity/quickstart.md` (incomplete: no verified PostgreSQL connection/run available) with exact verified Java 21/Gradle and PostgreSQL test-environment prerequisites, safe external `postgresql.datasource.*` configuration loading, secure `POSTGRES_PASSWORD` provisioning, `./gradlew test`, `./gradlew bootJar`, the actual executable JAR invocation with `--days=5`, exits, lock impact and unknown-commit reconciliation — DoD: another operator can start and test without guessed configuration or committed secrets — Verify: execute the documented build, test and run commands against the PostgreSQL test environment.
-- [ ] T027 Run the complete automated suite and the manual scenarios (partial: automated unit/configuration/connectivity checks pass; transfer manual scenarios, DB integration and safety/concurrency acceptance remain unverified) in `specs/001-sync-production-capacity/quickstart.md`; record pass/fail evidence and resolve failures, including relevant data-selection and persistence failures — DoD: all approved requirements are reviewable against observed outcomes — Verify: `./gradlew test` passes against the PostgreSQL test environment and the manual checks T016/T025 are complete.
-- [ ] T028 Review deployment readiness (blocked: schema, privileges, writer coverage, sizing and test evidence remain unverified) in `specs/001-sync-production-capacity/plan.md`: confirm owner approval, schema/privileges/writer coverage and practical transaction sizing, and document any remaining blockers and lock impact — DoD: no production deployment is implied while blockers remain — Verify: compare T001, T003 and T027 evidence to the plan's owner review gate.
+- [x] T026 Update `specs/001-sync-production-capacity/quickstart.md` with build/test instructions, `.env` lab runtime configuration, manual CLI usage and the project’s basic behavior, including total successful row count output — DoD: guide distinguishes manual lab use from local automated tests and excludes production deployment — Verify: reviewed; `rtk ./gradlew test --rerun-tasks` passed; no lab database connection was made.
+- [x] T027 Run applicable local unit tests and record only observed results — DoD: no unperformed database or deployment checks are reported as verified — Verify: final `rtk ./gradlew test --rerun-tasks` passed after mock transfer/idempotence tests; `rtk git diff --check` passed; no lab database connection was made.
 
 ## Coverage Matrix
 
 | Required behavior / source | Task IDs |
 |---|---|
 | FR-001 manual invocation only; non-web CLI contract | T006, T015, T026 |
-| FR-002–003 explicit validated days; nonzero and no target changes | T007, T011, T017, T022 |
-| FR-004–005 fixed UTC+08:00 calendar window | T007, T011, T016 |
-| FR-006 snapshot and `created_at` selection | T008, T010, T012, T013 |
-| FR-007 same-database source and target | T003, T004, T006, T012 |
-| FR-008 null-safe match and ambiguity | T008, T012, T020, T023 |
-| FR-009–010 insert/update all values including ID and creation time | T008, T012, T014 |
-| FR-011–013 ignore source `updated_at`, actual millisecond write time, unchanged no-op | T008, T009, T014 |
-| FR-014 repeat idempotence | T009, T014, T016 |
-| FR-015 source/unrelated preservation, no deletes | T008, T014, T016 |
-| FR-016 empty-window success | T008, T015, T016 |
-| FR-017 atomicity, known failure, rejected/unknown commit, no false rollback | T018, T019, T023–T025 |
-| FR-018 lock-and-wait for all target writers, preserve their commits | T003, T013, T021, T023, T025 |
-| CLI contract: configuration, outcomes and secret-safe reporting | T005–T007, T015, T017, T019, T022, T024, T026 |
-| SC-001–006, automated tests and manual verification | T007–T010, T016–T021, T025, T027 |
-| PostgreSQL test setup, deployment readiness, sizing and documentation | T001, T003, T026, T028 |
+| FR-002–003 explicit validated days and straightforward invalid-input failures | T007, T011, T017, T022 |
+| FR-004–005 fixed UTC+08:00 calendar window | T007, T011 |
+| FR-006 `created_at` source selection | T008, T012 |
+| FR-007 source and target configuration | T005, T006, T012 |
+| FR-008 null-safe matching | T008, T012, T023 |
+| FR-009–010 target insert/update values | T008, T014 |
+| FR-011–013 ignore source `updated_at`, write-time precision, unchanged no-op | T009, T014 |
+| FR-014 repeat idempotence | T009, T014 |
+| FR-015 source/unrelated preservation, no deletes | T008, T012, T014 |
+| FR-016 empty-window success | T008, T015 |
+| FR-017 successful total rows changed output | T015, T026, T027 |
+| CLI configuration, total transferred-row success count, and secret-safe failure reporting | T005–T007, T015, T017, T022–T023, T026 |
+| Local unit tests and documentation | T007–T009, T017, T027 |
 
 ## Dependencies & Execution Order
 
-- **Graph**: T001–T003 → T004–T006 → US1 (T007–T016) → US2 (T017–T025) → T026–T028. Confirm the PostgreSQL test connection in T003 before database-backed tests; no broad deployment-environment audit gates implementation.
-- T002 precedes T004 and T005; T004 precedes database tests; T005 precedes T006. T006 is required before story execution.
-- US1 tests T007–T010 precede their listed implementation tasks. T011 precedes CLI integration; T012 and T013 precede T014–T015; T016 follows a working US1.
-- US2 uses the US1 transfer, so it is not an independent implementation from scratch: T017–T021 can be authored after US1's interfaces/fixtures exist, but each must demonstrate a meaningful assertion failure for its specific missing safety behavior before T022–T024. T020/T021 may use deliberately faulty test implementations or injected seams to demonstrate sensitivity if US1 already satisfies the behavior; do not weaken production code. T025 follows safety implementation.
-- T026 follows both stories so its commands and configuration can be validated. T027 follows T026 and all manual checks; T028 follows review of the verification evidence.
-
-### Parallel Examples
-
-- **US1**: After T004–T006 and minimal compilable stubs, T007, T008, T009 and T010 can be developed in parallel in separate test files. Merge test interfaces before their respective implementations.
-- **US2**: After the US1 interfaces and test fixtures exist, T017–T021 can be developed in parallel in separate test files; coordinate database fixtures so concurrent test runs cannot corrupt each other. T022–T024 share application/transaction files and must be sequenced.
+- **Graph**: T002 → T005–T006 → US1 (T007–T009, T011–T015) → straightforward failure handling (T017, T022–T023) → T026–T027. Local transfer tests (T008) cover mock JDBC mapping and write decisions; lab-specific behavior remains for manual examiner use.
+- T002 precedes configuration tests and implementation. T005 precedes T006.
+- US1 local tests T007–T009 precede their implementation tasks. T011 precedes CLI integration; transfer behavior is covered by T008–T009. Transfer persistence tests use mocked JdbcTemplate and do not access any database.
+- Invalid-input test T017 precedes T022. T026 documents the project scope; T027 records only checks actually run.
 
 ## Implementation Strategy
 
-1. Complete shared setup and test infrastructure; owner approval of the stack and design has been received.
-2. Build US1 test-first and validate it in the PostgreSQL test environment as the functional MVP.
-3. Add and verify US2's safety paths and concurrency tests before any production release.
-4. Complete operator instructions, automated and manual verification, and the deployment readiness review. No migration, scheduler, web interface or automatic retry is in scope.
+1. Maintain the existing runtime configuration and implement the CLI/window behavior.
+2. Implement source SELECT and target insert/update/no-op behavior, covered by local mock-based unit tests.
+3. Handle invalid input and straightforward failures without claiming unverified database rollback behavior.
+4. Keep the project limited to training/examination scope; do not add automated lab database tests/connections, advanced concurrency/failure scenarios, or production-readiness work. The real transfer remains available for manual examiner use on the lab/test database.
+
+## Completion Boundary
+
+All listed implementation, test, and local verification tasks are marked complete. The checklist describes project-specification quality; automated checks cover local logic and mock JDBC behavior. No lab database run was performed here; the examiner remains responsible for manual verification against the configured lab/test database.
