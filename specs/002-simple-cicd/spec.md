@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-19
 
-**Status**: Draft
+**Status**: Draft (owner-reviewed requirements; implementation and verification not yet complete)
 
 **Input**: Replace the existing GitLab CI configuration with a small pipeline that builds a Boot JAR, performs SonarQube analysis with an enforced quality gate, and builds and pushes a Docker image. Run it for pushes to the default branch, including changes merged from approved merge requests. Do not deploy. Confirm necessary variables and configuration during planning.
 
@@ -13,6 +13,8 @@
 ### Session 2026-11-19
 
 - Q: When should the pipeline be triggered? → A: Only on pushes to the default branch, including changes merged from approved merge requests.
+- The owner approved the CI and image-publication scope exception and removal of the existing documentation publication job. The owner approved a post-merge quality gate; merge approval and branch protection are separate project settings, and direct pushes remain permitted.
+- The owner approved automated tests before publication and requested technology-neutral normative requirements while preserving the original input above.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -41,23 +43,24 @@ As a project maintainer, I want a failed build, analysis, or quality gate to pre
 
 **Acceptance Scenarios**:
 
-1. **Given** an eligible pipeline run, **When** the Boot JAR build fails, **Then** the analysis and image stages do not run and the run reports failure.
-2. **Given** a successful build, **When** SonarQube analysis fails or its quality gate fails, **Then** the image stage does not run and the run reports failure.
+1. **Given** an eligible pipeline run, **When** the application build or automated tests fail, **Then** the analysis and image stages do not run and the run reports failure.
+2. **Given** a successful build, **When** quality analysis fails or its quality gate fails, **Then** the image stage does not run and the run reports failure.
 3. **Given** a successful analysis, **When** the quality gate result is still pending, **Then** the pipeline waits for the result before proceeding to the image stage.
 
 ### Edge Cases
 
 - If the image build or registry push fails, the run reports failure rather than reporting successful publication.
-- SonarQube or registry unavailability, gate-result timeout behavior, duplicate pipelines, registry permissions, and image naming and tagging require owner confirmation during planning; this specification does not decide their handling.
+- If the analysis service is unavailable, the quality gate fails, or its result does not arrive within five minutes, the run fails without starting the image stage. If the registry is unavailable, publication fails.
+- Concurrent eligible runs publish separately identifiable commit-specific images; no moving image tag is required.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
-- **FR-001**: The project MUST replace the existing GitLab CI configuration, including removal of the existing Pages job.
+- **FR-001**: The project MUST replace the existing continuous integration configuration, including removal of the existing documentation publication job.
 - **FR-002**: The pipeline MUST run only for pushes to the default branch, including changes merged from approved merge requests; it MUST NOT run for unmerged merge requests or pushes to non-default branches.
-- **FR-003**: Each eligible run MUST execute the following stages in order: build the Boot JAR; perform SonarQube analysis and wait for its quality gate; build and push a Docker image.
-- **FR-004**: The analysis stage MUST proceed only after a successful Boot JAR build, and the image stage MUST proceed only after a successful analysis and passing quality gate.
+- **FR-003**: Each eligible run MUST execute the following stages in order: run automated tests and build an executable application artifact; perform quality analysis and wait for its quality gate; build and publish an image.
+- **FR-004**: The analysis stage MUST proceed only after successful tests and application build, and the image stage MUST proceed only after a successful analysis and passing quality gate.
 - **FR-005**: A failed build, failed analysis, or failed quality gate MUST result in a failed run and prevent the image stage from starting.
 - **FR-006**: A successful image stage MUST build an image from the built application and push it to the configured registry.
 - **FR-007**: A failed image build or push MUST result in a failed run rather than a successful publication result.
@@ -75,6 +78,6 @@ As a project maintainer, I want a failed build, analysis, or quality gate to pre
 
 ## Assumptions
 
-- The project owner has approved the CI pipeline and image publication as an exception to the application's narrow transfer-focused scope; the application's transfer behavior is unchanged.
-- The registry destination, access, image naming and tagging, runner capabilities, SonarQube configuration, variables and secrets, and failure-timeout handling remain decisions for the planning session. The pipeline trigger is limited to pushes to the default branch, including changes merged from approved merge requests. No registry destination is selected by this specification.
-- The required build, analysis, quality gate, and registry services will be made available as needed for the workflow; their setup and access details require confirmation during planning.
+- The project owner approved the pipeline and image publication as an exception to the application's narrow transfer-focused scope; the application's transfer behavior is unchanged.
+- Merge approvals and branch protection are managed separately; the pipeline neither verifies approval nor prevents a change reaching the default branch. Direct pushes are allowed by this specification.
+- Required services, access, credentials, and runner capabilities require verification before execution. The selected technical choices are documented in the plan, not prescribed by these requirements.

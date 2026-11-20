@@ -31,7 +31,6 @@
 
 ## Notes
 
-- The requested feature explicitly names GitLab CI, Boot JAR, SonarQube, and Docker. For example, FR-003 states “build the Boot JAR; perform SonarQube analysis and wait for its quality gate; build and push a Docker image.” These user-provided technology constraints are retained rather than silently changed; the two technology-purity items therefore do not pass. No implementation configuration or technical design is prescribed.
-- The feature-readiness checks assess whether the specification defines verifiable outcomes, not whether an implementation has already met them.
-- Registry destination, credentials, variables, image tags, runner capabilities, timeout behavior, duplicate pipelines, and additional trigger restrictions remain for owner confirmation during planning, as requested. Do not put secrets in the specification.
-- Items marked incomplete require consideration before `/speckit.plan`; the two incomplete items reflect the explicit requested scope, not missing requirements.
+- The owner approved technology-neutral normative requirements while retaining the original technology-specific input as provenance. The unchecked purity items acknowledge the retained input, not a technology mandate in the requirements.
+- The feature-readiness checks assess specification outcomes, not proof of an implementation or verified infrastructure. Planning records owner-approved choices and environment verification tasks; do not put secrets in the specification.
+- Verify service access, image availability, credentials, and runner behavior during implementation; stop and obtain owner review if the approved setup cannot be used.
