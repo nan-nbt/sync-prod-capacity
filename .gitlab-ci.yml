@@ -105,15 +105,10 @@ docker-image:
     - test "$(cat image-input/app.jar.sha256)" = "$(cat sonar-input/app.jar.sha256)"
     - docker info
     - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" .
-    - |
-      if [ "$IMAGE_PUBLISH_ENABLED" = "true" ]; then
-        test -n "$CI_REGISTRY" || { echo "CI_REGISTRY is required"; exit 1; }
-        test -n "$CI_REGISTRY_USER" || { echo "CI_REGISTRY_USER is required"; exit 1; }
-        test -n "$CI_REGISTRY_PASSWORD" || { echo "CI_REGISTRY_PASSWORD is required"; exit 1; }
-        printf '%s' "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password-stdin
-        docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
-      else
-        echo "Preflight: image push disabled"
-      fi
+    - test -n "$CI_REGISTRY" || { echo "CI_REGISTRY is required"; exit 1; }
+    - test -n "$CI_REGISTRY_USER" || { echo "CI_REGISTRY_USER is required"; exit 1; }
+    - test -n "$CI_REGISTRY_PASSWORD" || { echo "CI_REGISTRY_PASSWORD is required"; exit 1; }
+    - printf '%s' "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password-stdin
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
   after_script:
     - rm -rf "$DOCKER_CONFIG"
