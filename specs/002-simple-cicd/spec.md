@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-19
 
-**Status**: Draft (owner-reviewed requirements; implementation and verification not yet complete)
+**Status**: Implementation complete; overall acceptance verification remains open. The owner reports the pipeline runs successfully. The supplied run log verifies Docker service readiness, daemon connection and image build, but indicates publication was disabled in that run; the owner reports a later success with unconditional publication enabled, but its log and registry evidence are not attached here. Separate failure-path tests, excluded triggers, credential isolation, and plaintext DinD network isolation remain unverified.
 
 **Input**: Replace the existing GitLab CI configuration with a small pipeline that builds a Boot JAR, performs SonarQube analysis with an enforced quality gate, and builds and pushes a Docker image. Run it for pushes to the default branch, including changes merged from approved merge requests. Do not deploy. Confirm necessary variables and configuration during planning.
 
