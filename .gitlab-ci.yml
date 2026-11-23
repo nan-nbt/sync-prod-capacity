@@ -72,18 +72,21 @@ code-review:
 
 docker-image:
   stage: docker-image
+  # Do not start an unauthenticated DinD daemon until runner network isolation is verified.
+  rules:
+    - when: never
   image:
     name: repo.pouchen.com/docker-proxy-group/library/docker:27.3.1-dind-alpine3.20
     entrypoint: [""]
   variables:
     DOCKER_CONFIG: "$CI_PROJECT_DIR/.docker-config"
-    DOCKER_TLS_CERTDIR: "/certs"
-    DOCKER_HOST: "tcp://docker:2376"
-    DOCKER_TLS_VERIFY: "1"
-    DOCKER_CERT_PATH: "/certs/client"
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: "tcp://docker:2375"
   services:
     - name: repo.pouchen.com/docker-proxy-group/library/docker:27.3.1-dind-alpine3.20
       alias: docker
+      variables:
+        DOCKER_TLS_CERTDIR: ""
   tags:
     - SGP-Test-K8s
   timeout: 10m
@@ -95,9 +98,8 @@ docker-image:
   before_script:
     - umask 077
     - mkdir -p "$DOCKER_CONFIG"
-    - test -r "$DOCKER_CERT_PATH/ca.pem" || { echo "DinD CA certificate is unavailable"; exit 1; }
-    - test -r "$DOCKER_CERT_PATH/cert.pem" || { echo "DinD client certificate is unavailable"; exit 1; }
-    - test -r "$DOCKER_CERT_PATH/key.pem" || { echo "DinD client key is unavailable"; exit 1; }
+    - unset DOCKER_TLS DOCKER_TLS_VERIFY DOCKER_CERT_PATH DOCKER_CONTEXT
+    - export DOCKER_HOST="tcp://docker:2375"
   script:
     - test -n "$CI_REGISTRY_IMAGE" || { echo "CI_REGISTRY_IMAGE is required"; exit 1; }
     - test "$(sha256sum image-input/app.jar | awk '{print $1}')" = "$(cat image-input/app.jar.sha256)"
