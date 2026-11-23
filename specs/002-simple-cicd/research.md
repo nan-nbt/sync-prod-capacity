@@ -18,7 +18,7 @@
 - **Decision**: Pass the exact executable JAR and compiled analysis inputs from the build job as GitLab artifacts. Build the image from that JAR and push to the project GitLab container registry under the full commit SHA.
 - **Rationale**: Preserves tested-artifact provenance; distinct commit tags do not race for a moving tag. SHA tags are not inherently immutable and a rerun may replace the same tag.
 - **Alternatives considered**: `repo.pouchen.com/docker-pcc-local` (owner chose project GitLab registry and confirmed required exception approval); mutable `latest`; rebuilding the JAR in the image job.
-- **Verification**: Owner confirmed registry access and protected configuration; verify them and artifact retention/size in implementation without disclosing credentials.
+- **Verification**: Owner confirmed registry access and protected configuration; verify them and artifact retention/size in implementation without disclosing credentials. Publish the requested `build/libs/*.jar` outputs as well as a uniquely identified staged executable JAR; only the staged JAR is copied into the image.
 
 ## Decision 4: Quality analysis and gate
 
@@ -29,10 +29,10 @@
 
 ## Decision 5: Runner, image builder and runtime
 
-- **Decision**: Run on `SGP-Test-K8s`; use an internally proxied matching Docker 27.3.1 client and `repo.pouchen.com/docker-proxy-group/library/docker:27.3.1-dind-alpine3.20` service with TLS. Package only the JAR in a PCG-proxied Java 21 JRE runtime image, single Linux/amd64 architecture.
-- **Rationale**: Owner supplied the DinD service, confirmed runner support and approved the matching client/TLS approach and smaller JRE runtime. A Docker service requires a client and a secure connection.
-- **Alternatives considered**: Rootless BuildKit, privileged setup assumed without verification, reuse of the larger Gradle image as runtime, multi-architecture Buildx, deployment. None selected.
-- **Verification**: Confirm exact matching client and JRE tags are available, service privileges and certificate sharing work, and registry access is configured. If they do not, stop and ask the owner for an alternative rather than weakening TLS or claiming runner support.
+- **Decision**: Run every job on `SGP-Test-K8s`; use `repo.pouchen.com/docker-proxy-group/library/docker:27.3.1-dind-alpine3.20` as both image job container and DinD service as currently required, with TLS. Use the Docker CLI expected in the job image (verify its presence) and prevent its daemon entrypoint from starting a second daemon in the job container. Package only the JAR in the owner-selected PCG-proxied Java 21 JRE, single Linux/amd64 architecture.
+- **Rationale**: The current request explicitly specifies the same image and service. A separate service needs a working client, correct job-image entrypoint handling, privileged runner support and secure communication.
+- **Alternatives considered**: Previously owner-approved Docker 27.5.1 CLI job image, rootless BuildKit, assuming privileged setup, multi-architecture Buildx and deployment. The first does not satisfy the current strict image requirement; the others are outside scope or unverified.
+- **Verification**: Confirm this exact job image includes a working client and compatible shell, GitLab job entrypoint override works, service privileges and certificate sharing work, the runtime tag exists, and registry access is configured. If not, stop and seek owner approval rather than substituting images or weakening TLS.
 
 ## Decision 6: Secrets and runtime safety
 
@@ -48,6 +48,13 @@
 - **Alternatives considered**: Assume an unidentified separate project; disable eligibility restrictions; access the lab DB; none selected.
 - **Verification**: Use test-scoped failure injection and reviewed reverts, exercise all scenarios in [quickstart.md](quickstart.md), and retain evidence.
 
+## Decision 8: Stage names, timeout and cache
+
+- **Decision**: Name the stages exactly `build`, `code-review` and `docker-image`; all jobs use `SGP-Test-K8s` and explicit ten-minute timeouts. Bound the Sonar gate wait at 300 seconds. Cache only Gradle dependency data with a project/tool-version and protected-ref-aware key; publish build outputs as one-day same-pipeline artifacts.
+- **Rationale**: The current user instruction is strict about names, timeouts and caching/artifacts. Clean builds and cache misses must be correct; caches are an optimization, not evidence of the tested JAR. GitLab runner caches may differ between concurrent jobs and are not durable.
+- **Alternatives considered**: Existing working-tree `analysis`/`image` stage names; caching output JARs; indefinitely retained artifacts; omitted timeouts. None meets the current request or provenance needs.
+- **Verification**: Validate GitLab CI lint, cache isolation and cold/warm runs; verify the chosen artifact retention allows retries and ten-minute limits cover actual build and scanner runtimes. A timed-out scanner fails closed. Check whether the configured Sonar gate needs coverage or test-source data not currently generated.
+
 ## Company guidance and deviations
 
 - G2 Solution › GitLab Runner List documents `SGP-Test-K8s` and external network restrictions. The owner confirmed runner support/connectivity; actual job validation remains necessary.
@@ -57,4 +64,4 @@
 
 ## Research conclusion
 
-The owner has decided the material design and confirmed environment setup/required exception approvals. The plan is ready for task generation. Runner capabilities, image availability, project settings and all acceptance outcomes remain owner-reported or untested until implementation verifies them; a failure is a stop condition, not permission to substitute another design.
+The owner previously decided the material design and confirmed environment setup/required exception approvals; the current strict request supersedes the prior Docker CLI selection and specifies exact stage names. Ten-minute job timeouts, one-day artifact retention and dependency-only cache are proposed concrete settings. Runner capabilities, image availability, Sonar gate inputs, project settings and all acceptance outcomes remain owner-reported or untested until implementation verifies them; a failure is a stop condition, not permission to substitute another design.

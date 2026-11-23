@@ -9,7 +9,7 @@ This feature defines operational pipeline records, not new application database 
 | Source | Push event only; reject all other pipeline sources. |
 | Ref | Must equal the configured default branch. |
 | Commit SHA | Commit being built, analyzed and used to identify the published image. |
-| Stages | Build/test → quality analysis/gate → image build/push; a stage starts only after prerequisite success. |
+| Stages | `build` (build/test) → `code-review` (quality analysis/gate) → `docker-image` (build/push); a stage starts only after prerequisite success. |
 | Outcome | Success only when image push succeeds; failures are visible in GitLab stage/job results. |
 
 **Transitions**: eligible push → build running → failed or build succeeded → analysis running → failed, gate pending, gate failed, gate timed out, or gate passed → image running → failed or published. Any failure before gate pass prevents image creation. Pending gate waits at most five minutes and fails closed. No deployment state exists.
@@ -22,7 +22,8 @@ This feature defines operational pipeline records, not new application database 
 | Executable JAR | Output of successful `bootJar`; the image uses this exact artifact, transferred between jobs as an artifact, not rebuilt from source or substituted from cache. |
 | Compiled analysis inputs | Successful build outputs needed by the approved Java scanner; transferred as artifacts as required by that scanner. |
 | Test outcome | CI `gradle test` using the approved Gradle 8.14.4 build image succeeds before analysis; local wrapper remains 8.14.3. |
-| Security | Excludes `.env`, credentials and unrelated secrets; retention policy to be verified. |
+| Retention and cache | Successful build artifacts expire after one day; verify retries and access. The Gradle dependency cache is scoped by project/tool version and trust boundary and never supplies the executable JAR. |
+| Security | Excludes `.env`, credentials and unrelated secrets. |
 
 ## Quality gate result
 

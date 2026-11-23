@@ -1,18 +1,118 @@
-pages:
-  stage: deploy
-  image: repo.pouchen.com/docker-proxy-group/library/node:24.14.0-alpine
-  before_script:
-    - npm config set registry "https://repo.pouchen.com/repository/npm-npmjs/"
-  script:
-    - npm ci
-    - npm run build
-    - mv ./build public
-    - test -s public/index.html
-  pages: true
-  artifacts:
-    paths:
-      - public
+workflow:
   rules:
-    - if: "$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH"
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - when: never
+
+stages:
+  - build
+  - code-review
+  - docker-image
+
+variables:
+  GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+
+build:
+  stage: build
+  image: repo.pouchen.com/docker-proxy-group/library/gradle:8.14.4-jdk21-alpine
   tags:
     - SGP-Test-K8s
+  timeout: 10m
+  cache:
+    key: "gradle-$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_PROTECTED"
+    paths:
+      - .gradle/caches/modules-2/
+    policy: pull-push
+  script:
+    - gradle --no-daemon clean test bootJar
+    - rm -rf image-input sonar-input
+    - mkdir -p image-input sonar-input/classes sonar-input/libraries
+    - test "$(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*-plain.jar' | wc -l)" -eq 1
+    - cp "$(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*-plain.jar')" image-input/app.jar
+    - sha256sum image-input/app.jar | awk '{print $1}' > image-input/app.jar.sha256
+    - cp -R build/classes/java/main/. sonar-input/classes/
+    - gradle --no-daemon copyRuntimeClasspath
+    - cp -R build/sonar-input/libraries/. sonar-input/libraries/
+  artifacts:
+    name: "build-$CI_COMMIT_SHA"
+    paths:
+      - build/libs/*.jar
+      - image-input/app.jar
+      - image-input/app.jar.sha256
+      - sonar-input/classes/
+      - sonar-input/libraries/
+    expire_in: 1 day
+    when: on_success
+
+code-review:
+  stage: code-review
+  image:
+    name: repo.pouchen.com/docker-pcc-group/sonarsource/sonar-scanner-cli:11.4.0.2044_7.2.0
+    entrypoint: [""]
+  tags:
+    - SGP-Test-K8s
+  timeout: 10m
+  needs:
+    - job: build
+      artifacts: true
+  variables:
+    GIT_DEPTH: "0"
+  script:
+    - test -n "${SONAR_HOST_URL:-}" || { echo "SONAR_HOST_URL is required"; exit 1; }
+    - test -n "${SONAR_TOKEN:-}" || { echo "SONAR_TOKEN is required"; exit 1; }
+    - test -n "${SONAR_PROJECT_KEY:-}" || { echo "SONAR_PROJECT_KEY is required"; exit 1; }
+    - export SONAR_TOKEN
+    - sonar-scanner -Dsonar.projectKey="$SONAR_PROJECT_KEY" -Dsonar.host.url="$SONAR_HOST_URL" -Dsonar.sources=src/main/java -Dsonar.java.binaries=sonar-input/classes -Dsonar.java.libraries='sonar-input/libraries/*.jar' -Dsonar.java.source=21 -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300
+    - sha256sum image-input/app.jar | awk '{print $1}' > sonar-input/app.jar.sha256
+  artifacts:
+    name: "review-$CI_COMMIT_SHA"
+    paths:
+      - sonar-input/app.jar.sha256
+    expire_in: 1 day
+    when: on_success
+
+docker-image:
+  stage: docker-image
+  image:
+    name: repo.pouchen.com/docker-proxy-group/library/docker:27.3.1-dind-alpine3.20
+    entrypoint: [""]
+  variables:
+    DOCKER_CONFIG: "$CI_PROJECT_DIR/.docker-config"
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_HOST: "tcp://docker:2376"
+    DOCKER_TLS_VERIFY: "1"
+    DOCKER_CERT_PATH: "/certs/client"
+  services:
+    - name: repo.pouchen.com/docker-proxy-group/library/docker:27.3.1-dind-alpine3.20
+      alias: docker
+  tags:
+    - SGP-Test-K8s
+  timeout: 10m
+  needs:
+    - job: code-review
+      artifacts: true
+    - job: build
+      artifacts: true
+  before_script:
+    - umask 077
+    - mkdir -p "$DOCKER_CONFIG"
+    - test -r "$DOCKER_CERT_PATH/ca.pem" || { echo "DinD CA certificate is unavailable"; exit 1; }
+    - test -r "$DOCKER_CERT_PATH/cert.pem" || { echo "DinD client certificate is unavailable"; exit 1; }
+    - test -r "$DOCKER_CERT_PATH/key.pem" || { echo "DinD client key is unavailable"; exit 1; }
+  script:
+    - test -n "$CI_REGISTRY_IMAGE" || { echo "CI_REGISTRY_IMAGE is required"; exit 1; }
+    - test "$(sha256sum image-input/app.jar | awk '{print $1}')" = "$(cat image-input/app.jar.sha256)"
+    - test "$(cat image-input/app.jar.sha256)" = "$(cat sonar-input/app.jar.sha256)"
+    - docker info
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" .
+    - |
+      if [ "$IMAGE_PUBLISH_ENABLED" = "true" ]; then
+        test -n "$CI_REGISTRY" || { echo "CI_REGISTRY is required"; exit 1; }
+        test -n "$CI_REGISTRY_USER" || { echo "CI_REGISTRY_USER is required"; exit 1; }
+        test -n "$CI_REGISTRY_PASSWORD" || { echo "CI_REGISTRY_PASSWORD is required"; exit 1; }
+        printf '%s' "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password-stdin
+        docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+      else
+        echo "Preflight: image push disabled"
+      fi
+  after_script:
+    - rm -rf "$DOCKER_CONFIG"

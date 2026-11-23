@@ -1,1 +1,9 @@
+pluginManagement {
+    repositories {
+        maven {
+            url = uri('https://repo.pouchen.com/repository/maven-proxy-group/')
+        }
+    }
+}
+
 rootProject.name = 'sync-production-capacity'

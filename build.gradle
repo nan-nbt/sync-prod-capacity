@@ -14,7 +14,9 @@ java {
 }
 
 repositories {
-    mavenCentral()
+    maven {
+        url = uri('https://repo.pouchen.com/repository/maven-proxy-group/')
+    }
 }
 
 dependencies {
@@ -33,6 +35,11 @@ dependencies {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
     testImplementation 'org.springframework:spring-test'
+}
+
+tasks.register('copyRuntimeClasspath', Copy) {
+    from configurations.runtimeClasspath
+    into layout.buildDirectory.dir('sonar-input/libraries')
 }
 
 tasks.named('test') {
