@@ -72,9 +72,6 @@ code-review:
 
 docker-image:
   stage: docker-image
-  # Do not start an unauthenticated DinD daemon until runner network isolation is verified.
-  rules:
-    - when: never
   image:
     name: repo.pouchen.com/docker-proxy-group/library/docker:27.3.1-dind-alpine3.20
     entrypoint: [""]
@@ -85,8 +82,10 @@ docker-image:
   services:
     - name: repo.pouchen.com/docker-proxy-group/library/docker:27.3.1-dind-alpine3.20
       alias: docker
+      command: ["--tls=false"]
       variables:
         DOCKER_TLS_CERTDIR: ""
+        HEALTHCHECK_TCP_PORT: "2375"
   tags:
     - SGP-Test-K8s
   timeout: 10m
