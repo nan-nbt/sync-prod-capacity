@@ -4,18 +4,13 @@ image:
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
-  - name: id-k8s-qas
-
-transfer:
-  # Runs explicitly triggered from the suspended CronJob.
-  days: 5
+  - name: speckit-etl-anan-registry-pull
 
 cronJob:
+  # A suspended CronJob is deployed as a template; it never starts transfers.
   schedule: "0 2 * * *"
-  # The template always suspends this CronJob; scheduled transfers are not authorized.
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
-  backoffLimit: 0
 
 resources:
   requests:
@@ -25,21 +20,19 @@ resources:
     cpu: 500m
     memory: 512Mi
 
-# Create this Secret separately in the target namespace. Its `.env` key must
-# contain POSTGRES_URL, POSTGRES_USERNAME, POSTGRES_PASSWORD, and
-# POSTGRES_DRIVER_CLASS_NAME. Never store the file contents in chart values.
+# Provision this Secret out-of-band in the release namespace. Its selected key
+# must contain one complete .env file with all four required POSTGRES_* settings.
 databaseSecret:
-  name: sync-production-capacity-db
+  name: speckit-etl-anan-db-config
   key: .env
 
-# These settings have not been confirmed against QAS policy or the published
-# image filesystem. Verify compatibility before triggering a run.
+# Security contexts are configurable. Confirm compatibility with QAS policy and
+# the image before triggering a Job; do not weaken them without approval.
 podSecurityContext:
   runAsNonRoot: true
   runAsUser: 10001
   seccompProfile:
     type: RuntimeDefault
-
 containerSecurityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: true
