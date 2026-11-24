@@ -1,0 +1,48 @@
+image:
+  repository: pcggit-registry.pouchen.com/pci-dev-ai/training/speckit-etl-anan
+  tag: "951191c5cc79f88ee06a58c8146af884e60a59a1"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets:
+  - name: id-k8s-qas
+
+transfer:
+  # Runs explicitly triggered from the suspended CronJob.
+  days: 5
+
+cronJob:
+  schedule: "0 2 * * *"
+  # The template always suspends this CronJob; scheduled transfers are not authorized.
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  backoffLimit: 0
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# Create this Secret separately in the target namespace. Its `.env` key must
+# contain POSTGRES_URL, POSTGRES_USERNAME, POSTGRES_PASSWORD, and
+# POSTGRES_DRIVER_CLASS_NAME. Never store the file contents in chart values.
+databaseSecret:
+  name: sync-production-capacity-db
+  key: .env
+
+# These settings have not been confirmed against QAS policy or the published
+# image filesystem. Verify compatibility before triggering a run.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
