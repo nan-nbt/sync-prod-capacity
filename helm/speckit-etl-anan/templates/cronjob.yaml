@@ -32,7 +32,7 @@ spec:
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               resources: {{ .Values.resources | toJson }}
               args:
-                - "--days=5"
+                - "--days=30"
               securityContext: {{ .Values.containerSecurityContext | toJson }}
               volumeMounts:
                 - name: database-env
