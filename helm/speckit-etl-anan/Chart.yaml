@@ -1,0 +1,6 @@
+apiVersion: v2
+name: speckit-etl-anan
+description: QAS Helm chart for manually triggered capacity transfer batch runs.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

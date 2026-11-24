@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "speckit-etl-anan.cronjobName" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "speckit-etl-anan.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  schedule: {{ .Values.cronJob.schedule | quote }}
+  # Transfers must be explicitly triggered, never scheduled by Argo CD sync.
+  suspend: true
+  successfulJobsHistoryLimit: {{ .Values.cronJob.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.cronJob.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ .Values.cronJob.backoffLimit }}
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: {{ include "speckit-etl-anan.name" . }}
+            app.kubernetes.io/instance: {{ .Release.Name }}
+            app.kubernetes.io/managed-by: {{ .Release.Service }}
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false
+          imagePullSecrets:
+            {{ toYaml .Values.imagePullSecrets | nindent 12 }}
+          securityContext:
+            {{ toYaml .Values.podSecurityContext | nindent 12 }}
+          containers:
+            - name: {{ include "speckit-etl-anan.name" . }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              resources:
+                {{ toYaml .Values.resources | nindent 16 }}
+              args:
+                - "--days={{ .Values.transfer.days }}"
+              securityContext:
+                {{ toYaml .Values.containerSecurityContext | nindent 16 }}
+              volumeMounts:
+                - name: database-env
+                  mountPath: /app/.env
+                  subPath: {{ .Values.databaseSecret.key | quote }}
+                  readOnly: true
+          volumes:
+            - name: database-env
+              secret:
+                secretName: {{ .Values.databaseSecret.name | quote }}
+                items:
+                  - key: {{ .Values.databaseSecret.key | quote }}
+                    path: {{ .Values.databaseSecret.key | quote }}
