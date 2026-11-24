@@ -1,5 +1,5 @@
 apiVersion: v2
-name: speckit-etl-anan
+name: sync-production-capacity
 description: QAS Helm chart for manually triggered capacity transfer batch runs.
 type: application
 version: 0.1.0
