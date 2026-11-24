@@ -1,8 +1,8 @@
-{{- define "speckit-etl-anan.name" -}}
+{{- define "sync-production-capacity.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "speckit-etl-anan.fullname" -}}
+{{- define "sync-production-capacity.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 52 | trimSuffix "-" -}}
 {{- else -}}
@@ -15,15 +15,8 @@
 {{- end -}}
 {{- end -}}
 
-{{- define "speckit-etl-anan.cronjobName" -}}
-{{- include "speckit-etl-anan.fullname" . | trunc 52 | trimSuffix "-" -}}
+{{- define "sync-production-capacity.cronjobName" -}}
+{{- include "sync-production-capacity.fullname" . | trunc 52 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "speckit-etl-anan.labels" -}}
-helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" }}
-app.kubernetes.io/name: {{ include "speckit-etl-anan.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end -}}
 

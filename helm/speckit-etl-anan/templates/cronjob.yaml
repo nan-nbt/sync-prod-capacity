@@ -1,9 +1,9 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ include "speckit-etl-anan.cronjobName" . }}
+  name: {{ include "sync-production-capacity.cronjobName" . }}
   labels:
-    app.kubernetes.io/name: {{ include "speckit-etl-anan.name" . }}
+    app.kubernetes.io/name: {{ include "sync-production-capacity.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
@@ -18,7 +18,7 @@ spec:
       template:
         metadata:
           labels:
-            app.kubernetes.io/name: {{ include "speckit-etl-anan.name" . }}
+            app.kubernetes.io/name: {{ include "sync-production-capacity.name" . }}
             app.kubernetes.io/instance: {{ .Release.Name }}
             app.kubernetes.io/managed-by: {{ .Release.Service }}
         spec:
@@ -27,7 +27,7 @@ spec:
           imagePullSecrets: {{ .Values.imagePullSecrets | toJson }}
           securityContext: {{ .Values.podSecurityContext | toJson }}
           containers:
-            - name: {{ include "speckit-etl-anan.name" . }}
+            - name: {{ include "sync-production-capacity.name" . }}
               image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag | quote }}
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               resources: {{ .Values.resources | toJson }}
